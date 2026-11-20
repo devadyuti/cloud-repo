@@ -1,0 +1,188 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Stream 4 (Act On Your Data): the service execution
+  roles the "Act On Your Data" lab submodules need. In the workshop these were
+  created by the Foundation stack, so the lab instructions assume they already
+  exist. This template recreates them (mda- prefixed) since our slimmed
+  Foundation omitted them.
+
+  Roles created:
+    - mda-DatabrewExecutionRole  (Data Profiling with Glue DataBrew)
+    - mda-SageMakerExecutionRole (Sentiment Analysis + Feature Engineering with
+                                  SageMaker AI / Data Wrangler)
+    - mda-QuickSightVPCRole      (Dashboards with QuickSight / Amazon Quick Suite)
+  Plus a DataBrew scratch/output bucket the DataBrew role writes to.
+
+  Not covered here (done in-console during the labs): the OpenSearch domain
+  (real cost, created when you reach the Log Analytics / Full Text Search
+  submodules) and the QuickSight account subscription (manual signup).
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: mda
+    Description: Short prefix used to name resources.
+    AllowedPattern: "[a-z0-9-]+"
+
+Resources:
+
+  # DataBrew scratch/output bucket (workshop uses a dedicated databrew bucket).
+  DataBrewBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${ProjectName}-databrew-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # --- Data Profiling: Glue DataBrew execution role -------------------------
+  DatabrewExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-DatabrewExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - databrew.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueDataBrewServiceRole
+      Policies:
+        - PolicyName: S3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # DataBrew scratch/output bucket (read/write).
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${DataBrewBucket}"
+                  - !Sub "arn:aws:s3:::${DataBrewBucket}/*"
+              - Effect: Allow
+                Action:
+                  - s3:PutObjectAcl
+                Resource:
+                  - !Sub "arn:aws:s3:::${DataBrewBucket}/*"
+              # Read the stage data lake bucket (source datasets to profile).
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource:
+                  - !Sub
+                    - "arn:aws:s3:::${Bucket}"
+                    - Bucket:
+                        Fn::ImportValue: !Sub "${ProjectName}-StageBucketName"
+                  - !Sub
+                    - "arn:aws:s3:::${Bucket}/*"
+                    - Bucket:
+                        Fn::ImportValue: !Sub "${ProjectName}-StageBucketName"
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                Resource:
+                  - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+                Condition:
+                  StringLike:
+                    kms:ViaService:
+                      - s3.*.amazonaws.com
+
+  # --- Sentiment Analysis + Feature Engineering: SageMaker execution role ----
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-SageMakerExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSageMakerCanvasAIServicesAccess
+        - arn:aws:iam::aws:policy/AmazonSageMakerCanvasFullAccess
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+      Policies:
+        - PolicyName: SageMakerDataWranglerPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - "arn:aws:s3:::*"
+                  - "arn:aws:s3:::*/*"
+              - Effect: Allow
+                Action:
+                  - kms:DescribeKey
+                  - kms:GenerateDataKey
+                  - kms:Decrypt
+                Resource:
+                  - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+
+  # --- Dashboards: QuickSight VPC/network role ------------------------------
+  QuickSightVPCRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-QuickSightVPCRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - quicksight.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: NetworkEndpointPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:ModifyNetworkInterfaceAttribute
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeSubnets
+                  - ec2:DescribeSecurityGroups
+                Resource: "*"
+
+Outputs:
+  DataBrewBucketName:
+    Value: !Ref DataBrewBucket
+    Export:
+      Name: !Sub "${ProjectName}-DataBrewBucketName"
+  DatabrewExecutionRoleArn:
+    Value: !GetAtt DatabrewExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-DatabrewExecutionRoleArn"
+  SageMakerExecutionRoleArn:
+    Value: !GetAtt SageMakerExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-SageMakerExecutionRoleArn"
+  QuickSightVPCRoleArn:
+    Value: !GetAtt QuickSightVPCRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-QuickSightVPCRoleArn"

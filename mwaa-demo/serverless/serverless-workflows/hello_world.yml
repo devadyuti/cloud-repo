@@ -1,0 +1,18 @@
+# MWAA Serverless Workflow: hello_world
+# Simple single-task validation workflow.
+
+hello_world:
+  dag_id: hello_world
+  schedule: None
+  default_args:
+    start_date: '2024-01-01'
+    retries: 0
+  tasks:
+    say_hello:
+      operator: airflow.providers.amazon.aws.operators.s3.S3CreateObjectOperator
+      s3_bucket: 'any-company-mwaa-demo-dags-123456789012'
+      s3_key: 'serverless/output/hello_world.txt'
+      data: 'Hello from MWAA Serverless'
+      replace: true
+      dependencies: []
+  catchup: false

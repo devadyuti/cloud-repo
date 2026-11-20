@@ -1,0 +1,7 @@
+strands-agents
+strands-agents-tools
+bedrock-agentcore
+# Observability: ADOT distro so AgentCore auto-instruments the runtime and
+# exports OpenTelemetry spans to CloudWatch (Transaction Search). 0.18.0+ is
+# required for spans to land in the agent's own log group.
+aws-opentelemetry-distro>=0.18.0

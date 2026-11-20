@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Update Tests & README on Code Change",
+      "description": "When code or scripts are edited in any folder of this monorepo, automatically update the corresponding tests and README to stay in sync with the changes.",
+      "trigger": "PostFileSave",
+      "matcher": "(.*[^/]*\\.ts$|.*[^/]*\\.tsx$|.*[^/]*\\.js$|.*[^/]*\\.jsx$|.*[^/]*\\.py$|.*[^/]*\\.sh$|.*[^/]*\\.vue$|.*[^/]*\\.mjs$)",
+      "action": {
+        "type": "agent",
+        "prompt": "A file was just edited in this monorepo. Identify which folder/project it belongs to. Then: 1) Check if there are existing tests for the changed code — if so, update them to reflect the new behavior. If no tests exist yet, create appropriate tests. 2) Review the folder's README.md and update it if the change affects documented behavior, usage instructions, or features. Keep changes minimal and focused on what actually changed."
+      },
+      "enabled": false
+    }
+  ]
+}

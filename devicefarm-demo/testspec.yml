@@ -1,0 +1,50 @@
+# Device Farm custom test environment spec (Amazon Linux 2 Android host).
+version: 0.1
+
+android_test_host: amazon_linux_2
+
+phases:
+  install:
+    commands:
+      - devicefarm-cli use python 3.11
+      - devicefarm-cli use appium 2
+      - python --version
+      - appium --version
+      - cd $DEVICEFARM_TEST_PACKAGE_PATH
+      # No venv: devicefarm-cli's python 3.11 lacks ensurepip and virtualenv.
+      # Offline user-site install from the bundled wheelhouse (linux x86_64 / py3.11).
+      - python -m pip install --user --no-index --find-links=./wheelhouse -r requirements.txt
+
+  pre_test:
+    commands:
+      - export APPIUM_BASE_PATH=/wd/hub
+      - >-
+        appium --base-path=$APPIUM_BASE_PATH --log-timestamp --log-no-colors
+        --relaxed-security --default-capabilities
+        "{\"appium:deviceName\": \"$DEVICEFARM_DEVICE_NAME\",
+        \"platformName\": \"$DEVICEFARM_DEVICE_PLATFORM_NAME\",
+        \"appium:app\": \"$DEVICEFARM_APP_PATH\",
+        \"appium:udid\": \"$DEVICEFARM_DEVICE_UDID\",
+        \"appium:platformVersion\": \"$DEVICEFARM_DEVICE_OS_VERSION\",
+        \"appium:automationName\": \"UiAutomator2\",
+        \"appium:autoGrantPermissions\": true}"
+        >> $DEVICEFARM_LOG_DIR/appium.log 2>&1 &
+      # Wait (max ~60s) for the Appium server to accept requests.
+      - |-
+        for i in $(seq 1 30); do
+          curl -sf http://127.0.0.1:4723/wd/hub/status > /dev/null && echo "Appium up" && break
+          sleep 2
+        done
+
+  test:
+    commands:
+      - cd $DEVICEFARM_TEST_PACKAGE_PATH
+      - echo "Running on $DEVICEFARM_DEVICE_NAME (Android $DEVICEFARM_DEVICE_OS_VERSION)"
+      - python -m pytest tests/ -v --junitxml=$DEVICEFARM_LOG_DIR/junit.xml
+
+  post_test:
+    commands:
+      - echo "Tests finished; artifacts in $DEVICEFARM_LOG_DIR"
+
+artifacts:
+  - $DEVICEFARM_LOG_DIR

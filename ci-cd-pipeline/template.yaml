@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Demo Orders API - CI/CD Pipeline with CodeDeploy traffic shifting
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.12
+    MemorySize: 128
+
+Resources:
+  OrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: demo-orders-api
+      Handler: src/handler.lambda_handler
+      CodeUri: .
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: AllAtOnce
+        # Options: Canary10Percent5Minutes, Linear10PercentEvery1Minute, AllAtOnce
+        Alarms:
+          - !Ref OrdersFunctionErrorsAlarm
+      Events:
+        GetOrders:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: get
+        PostOrder:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: post
+
+  OrdersFunctionErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: demo-orders-api-errors
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: demo-orders-api
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/orders"
+  FunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt OrdersFunction.Arn

@@ -1,0 +1,35 @@
+# CodeBuild example: build the test bundle and run it on Device Farm.
+# The CodeBuild role needs devicefarm:* on the demo project (us-west-2).
+version: 0.2
+
+env:
+  variables:
+    PROJECT_NAME: example-bank-devicefarm-demo
+    # APP_PATH: path to the APK produced by your app build stage (optional)
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - yum install -y jq zip unzip >/dev/null 2>&1 || true
+  build:
+    commands:
+      - cd devicefarm-demo
+      - make package
+      - ./scripts/run_demo.sh
+  post_build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR/devicefarm-demo && ./scripts/fetch_results.sh || true
+
+artifacts:
+  base-directory: devicefarm-demo/results
+  files:
+    - '**/*'
+
+reports:
+  devicefarm-junit:
+    base-directory: devicefarm-demo/results
+    files:
+      - '**/*.xml'
+    file-format: JUNITXML

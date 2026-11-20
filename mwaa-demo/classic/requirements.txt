@@ -1,0 +1,15 @@
+# Airflow provider dependencies for classic MWAA (any-company-mwaa-demo)
+# Constraint matches the MWAA environment in stacks/mwaa_stack.py: Airflow 3.2.1 / Python 3.12.
+--constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.2.1/constraints-3.12.txt"
+
+# Amazon provider — covers S3, Glue, ECS, Redshift, SNS operators
+apache-airflow-providers-amazon==9.25.0
+
+# HTTP provider — for external system integration DAG (HttpSensor, HttpOperator)
+apache-airflow-providers-http==6.0.2
+
+# Astronomer Cosmos — renders a dbt project as an Airflow DAG (one task per model + tests).
+# dbt-core / dbt-redshift are deliberately NOT installed here: their pins conflict with
+# Airflow's constraints. They live in an isolated venv created by startup.sh, and Cosmos
+# calls that executable via ExecutionConfig(dbt_executable_path=...).
+astronomer-cosmos==1.15.1

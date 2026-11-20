@@ -1,0 +1,7 @@
+{
+  "app": "python3 app.py",
+  "context": {
+    "mwaa_environment_name": "any-company-mwaa-demo",
+    "dags_bucket_name": "any-company-mwaa-demo-dags-123456789012"
+  }
+}

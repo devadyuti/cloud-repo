@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_transactions
+    description: Typed transactions with a signed amount (withdrawals and fees are negative).
+    columns:
+      - name: transaction_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["investment", "deposit", "withdrawal", "fee"]
+      - name: amount
+        data_tests: [not_null]
+
+  - name: stg_customers
+    description: Customer reference data.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: segment
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["premium", "standard"]

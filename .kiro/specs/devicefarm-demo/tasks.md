@@ -1,0 +1,11 @@
+# Tasks
+- [x] 1. Scaffold project layout, requirements.txt, Makefile, README (R6)
+- [x] 2. Write conftest.py driver fixture with Device Farm + local fallback (R1)
+- [x] 3. Write 3 Appium tests with screenshots against the sample Android app (R1)
+- [x] 4. Write testspec.yml (R2)
+- [x] 5. Write package.sh and `make package` producing test_bundle.zip; verify zip structure (R1)
+- [x] 6. Write run_demo.sh with idempotent project/pool/upload/run/poll (R3)
+- [x] 7. Write fetch_results.sh (R3)
+- [x] 8. Add CodeBuild buildspec and GitHub Actions workflow (R4)
+- [x] 9. Write RUNBOOK.md with timings, banking talking points, backup plan (R5)
+- [x] 10. Run `make lint` and `make package`; fix issues (R6)

@@ -1,0 +1,492 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Stream 1: Ingestion layer. Lands source data into
+  the Stream 0 raw bucket (imported) for the Glue crawler / Athena / Lake
+  Formation stack to process. Three source pipelines:
+    1. Amazon DynamoDB (Product) -> Kinesis Data Stream -> Kinesis Data Firehose
+       -> raw bucket (prefix product/).
+    2. Amazon Aurora PostgreSQL (Reviews) -> AWS DMS CDC task -> raw bucket
+       (prefix reviews/).
+    3. Salesforce (SaaS) -> Amazon AppFlow -> raw bucket (prefix salesforce/).
+       Gated behind EnableAppFlow (default false) because it requires a
+       pre-created Salesforce connector profile / OAuth connection.
+  Reuses an existing VPC (the "Analytics Workshop VPC" by default) rather than
+  creating new networking. Adapted from the AWS Modern Data Architecture
+  Immersion Day workshop templates, wired to this project's Stream 0 exports.
+
+# ---------------------------------------------------------------------------
+Parameters:
+  ProjectName:
+    Type: String
+    Default: mda
+    Description: Short prefix used to name/derive resources. Must match Stream 0.
+    AllowedPattern: "[a-z0-9-]+"
+
+  Stream0StackExportPrefix:
+    Type: String
+    Default: mda
+    Description: >
+      The export-name prefix used by the Stream 0 stack (e.g. "mda" gives
+      exports like mda-RawBucketName, mda-FirehoseExecutionRoleArn).
+
+  # --- Reused network (defaults are the discovered Analytics Workshop VPC) ---
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-05b7b77b857f53ef1
+    Description: Existing VPC to deploy Aurora and DMS into (reused, not created).
+
+  VpcCidr:
+    Type: String
+    Default: 10.2.0.0/16
+    Description: CIDR of the reused VPC; used for the Aurora ingress rule.
+
+  DBSubnet1:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0204cb14175c717eb
+    Description: Private subnet in AZ 1 for Aurora/DMS subnet groups.
+
+  DBSubnet2:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0d65602c96c7689ae
+    Description: Private subnet in AZ 2 for Aurora/DMS subnet groups.
+
+  DBSubnet1AZ:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-1a
+    Description: AZ of DBSubnet1 (used to pin the DMS replication instance).
+
+  # --- Aurora / DMS sizing & credentials -----------------------------------
+  DefaultPassword:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: >
+      Master password for the Aurora cluster (user mdauser) and the AuroraSecret.
+      Use at least 8 chars. If left blank, EnableAurora must be false.
+
+  AuroraInstanceClass:
+    Type: String
+    Default: db.t4g.medium
+    Description: Aurora instance class.
+
+  DmsInstanceClass:
+    Type: String
+    Default: dms.t3.medium
+    AllowedValues: ["dms.t3.medium", "dms.t3.large", "dms.c5.large", "dms.c5.xlarge"]
+    Description: DMS replication instance class (downsized from the workshop default for dev accounts).
+
+  # --- Feature toggles -------------------------------------------------------
+  EnableAurora:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+    Description: Create the Aurora + DMS branch (branch 2). Requires DefaultPassword.
+
+  EnableAppFlow:
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+    Description: >
+      Create the Salesforce -> AppFlow branch (branch 3). Off by default: it
+      needs a pre-existing Salesforce connector profile (SalesforceConnectionName).
+
+  SalesforceConnectionName:
+    Type: String
+    Default: ""
+    Description: >
+      Name of an existing Amazon AppFlow Salesforce connector profile. Required
+      only when EnableAppFlow is true.
+
+  SalesforceObject:
+    Type: String
+    Default: Account
+    Description: Salesforce object to extract when EnableAppFlow is true.
+
+  CDCLambdaCodeBucket:
+    Type: String
+    Default: ""
+    Description: >
+      S3 bucket holding the GenerateCDCRecord Lambda deployment zip. Leave blank
+      to default to the Stream 0 scripts bucket export (<prefix>-ScriptsBucketName).
+
+  CDCLambdaCodeKey:
+    Type: String
+    Default: lambda/generate_cdc_record.zip
+    Description: S3 key of the GenerateCDCRecord Lambda deployment zip.
+
+Conditions:
+  CreateAurora: !Equals [!Ref EnableAurora, "true"]
+  CreateAppFlow: !Equals [!Ref EnableAppFlow, "true"]
+  UseDefaultCDCLambdaBucket: !Equals [!Ref CDCLambdaCodeBucket, ""]
+
+Resources:
+
+  # ===========================================================================
+  # BRANCH 1: DynamoDB (Product) -> Kinesis Data Stream -> Firehose -> raw/
+  # Manual workshop steps (NOT in this template):
+  #   - Create the "Product" DynamoDB table (partition key Product_Id, String).
+  #   - Enable "Kinesis Data Streams for DynamoDB" on it -> ProductDataStream.
+  #   - Create the Kinesis Data Firehose delivery stream sourcing from
+  #     ProductDataStream, with new-line delimiter, dynamic partitioning, and
+  #     inline JSON parsing (partition keys tableName/year/month/day), writing to
+  #     raw/ under prefix
+  #     !{partitionKeyFromQuery:tableName}/year=.../month=.../day=.../
+  # Dynamic partitioning can only be set at Firehose creation time, so the
+  # delivery stream is created manually in the lab rather than here.
+  # This template owns only the target Kinesis Data Stream below.
+  # ===========================================================================
+  # Provisioned with a single shard to match the workshop (on-demand starts at
+  # 4 shards). The manual "Product" DynamoDB table streams into this via
+  # "Kinesis Data Streams for DynamoDB".
+  ProductDataStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Sub "${ProjectName}-product-stream"
+      StreamModeDetails:
+        StreamMode: PROVISIONED
+      ShardCount: 1
+
+  # ===========================================================================
+  # BRANCH 2: Aurora PostgreSQL (Reviews) -> DMS CDC -> raw/reviews/
+  # Reuses the existing VPC/subnets. Gated behind EnableAurora.
+  # ===========================================================================
+  AuroraDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Condition: CreateAurora
+    Properties:
+      DBSubnetGroupDescription: Subnets for the Aurora cluster (reused VPC)
+      SubnetIds:
+        - !Ref DBSubnet1
+        - !Ref DBSubnet2
+
+  AuroraSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: CreateAurora
+    Properties:
+      GroupDescription: Security group for the Aurora DB instance
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        # Allow Postgres from within the reused VPC (DMS, Lambda loaders, etc.).
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref VpcCidr
+
+  # Cluster parameter group enabling logical replication so DMS CDC can read WAL.
+  AuroraClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Condition: CreateAurora
+    Properties:
+      Description: Enables CDC (logical replication) for DMS
+      Family: aurora-postgresql17
+      Parameters:
+        rds.logical_replication: "1"
+        aurora.enhanced_logical_replication: "1"
+        aurora.logical_replication_backup: "0"
+        aurora.logical_replication_globaldb: "0"
+        wal_sender_timeout: "0"
+        password_encryption: "md5"
+
+  AuroraCluster:
+    Type: AWS::RDS::DBCluster
+    Condition: CreateAurora
+    Properties:
+      DatabaseName: mdacluster
+      MasterUsername: mdauser
+      MasterUserPassword: !Ref DefaultPassword
+      DBClusterParameterGroupName: !Ref AuroraClusterParameterGroup
+      DBSubnetGroupName: !Ref AuroraDBSubnetGroup
+      Engine: aurora-postgresql
+      EngineMode: provisioned
+      EngineVersion: "17.4"
+      Port: 5432
+      VpcSecurityGroupIds:
+        - !Ref AuroraSecurityGroup
+
+  AuroraDB:
+    Type: AWS::RDS::DBInstance
+    Condition: CreateAurora
+    Properties:
+      DBClusterIdentifier: !Ref AuroraCluster
+      DBInstanceClass: !Ref AuroraInstanceClass
+      DBInstanceIdentifier: !Sub "${ProjectName}-reviews-db"
+      DBSubnetGroupName: !Ref AuroraDBSubnetGroup
+      Engine: aurora-postgresql
+      EngineVersion: "17.4"
+      MultiAZ: false
+      PubliclyAccessible: false
+
+  AuroraSecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: CreateAurora
+    Properties:
+      Name: !Sub "${ProjectName}-aurora-secret"
+      Description: Aurora master credentials for the reviews DB
+      SecretString: !Sub '{"username":"mdauser","password":"${DefaultPassword}"}'
+
+  SecretRDSInstanceAttachment:
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Condition: CreateAurora
+    Properties:
+      SecretId: !Ref AuroraSecret
+      TargetId: !Ref AuroraDB
+      TargetType: AWS::RDS::DBInstance
+
+  # --- DMS: roles, network, replication instance ---------------------------
+  # DMS S3 target write access, scoped to the imported Stream 0 raw bucket.
+  DMSExecutionRole:
+    Type: AWS::IAM::Role
+    Condition: CreateAurora
+    Properties:
+      RoleName: !Sub "${ProjectName}-DMSExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: dms.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: S3AccessForDMS
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:PutObjectTagging
+                Resource: !Sub
+                  - "arn:aws:s3:::${Bucket}/*"
+                  - Bucket:
+                      Fn::ImportValue: !Sub "${Stream0StackExportPrefix}-RawBucketName"
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub
+                  - "arn:aws:s3:::${Bucket}"
+                  - Bucket:
+                      Fn::ImportValue: !Sub "${Stream0StackExportPrefix}-RawBucketName"
+
+  # Account-level DMS service roles (fixed names required by the DMS service).
+  # dms-vpc-role lets DMS manage subnet groups and ENIs in the VPC.
+  DMSVpcRole:
+    Type: AWS::IAM::Role
+    Condition: CreateAurora
+    Properties:
+      RoleName: dms-vpc-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: dms.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole
+      Path: /
+
+  DMSCloudwatchRole:
+    Type: AWS::IAM::Role
+    Condition: CreateAurora
+    Properties:
+      RoleName: dms-cloudwatch-logs-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: dms.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole
+      Path: /
+
+  DMSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: CreateAurora
+    Properties:
+      GroupDescription: Security group for the DMS replication instance
+      VpcId: !Ref VpcId
+
+  DMSReplicationSubnetGroup:
+    Type: AWS::DMS::ReplicationSubnetGroup
+    Condition: CreateAurora
+    # DMS validates dms-vpc-role when creating a subnet group, so it must exist
+    # first. Both share the CreateAurora condition, so the dependency is valid.
+    DependsOn: DMSVpcRole
+    Properties:
+      ReplicationSubnetGroupDescription: Subnets for DMS (reused VPC)
+      SubnetIds:
+        - !Ref DBSubnet1
+        - !Ref DBSubnet2
+
+  DMSReplicationInstance:
+    Type: AWS::DMS::ReplicationInstance
+    Condition: CreateAurora
+    Properties:
+      ReplicationInstanceIdentifier: !Sub "${ProjectName}-aurora-s3-repinstance"
+      ReplicationInstanceClass: !Ref DmsInstanceClass
+      AvailabilityZone: !Ref DBSubnet1AZ
+      PubliclyAccessible: false
+      ReplicationSubnetGroupIdentifier: !Ref DMSReplicationSubnetGroup
+      VpcSecurityGroupIds:
+        - !Ref DMSSecurityGroup
+
+  # DMS source (Aurora) and target (raw S3) endpoints. The replication TASK
+  # itself is created as a runbook step after the reviews table is loaded, so
+  # the source table list can be scoped correctly.
+  DMSSourceEndpoint:
+    Type: AWS::DMS::Endpoint
+    Condition: CreateAurora
+    Properties:
+      EndpointIdentifier: !Sub "${ProjectName}-aurora-source"
+      EndpointType: source
+      EngineName: aurora-postgresql
+      ServerName: !GetAtt AuroraDB.Endpoint.Address
+      Port: 5432
+      DatabaseName: mdacluster
+      Username: mdauser
+      Password: !Ref DefaultPassword
+
+  DMSTargetEndpoint:
+    Type: AWS::DMS::Endpoint
+    Condition: CreateAurora
+    Properties:
+      EndpointIdentifier: !Sub "${ProjectName}-raw-s3-target"
+      EndpointType: target
+      EngineName: s3
+      S3Settings:
+        ServiceAccessRoleArn: !GetAtt DMSExecutionRole.Arn
+        BucketName:
+          Fn::ImportValue: !Sub "${Stream0StackExportPrefix}-RawBucketName"
+        BucketFolder: reviews
+        DataFormat: parquet
+
+  # --- GenerateCDCRecord Lambda --------------------------------------------
+  # Runs in-VPC, ensures the reviews table exists (with a PK + REPLICA IDENTITY
+  # FULL for CDC), and inserts review rows. Each insert becomes a CDC change
+  # event the DMS task streams to raw/reviews/.
+  CDCLambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: CreateAurora
+    Properties:
+      GroupDescription: Security group for the GenerateCDCRecord Lambda
+      VpcId: !Ref VpcId
+
+  CDCLambdaRole:
+    Type: AWS::IAM::Role
+    Condition: CreateAurora
+    Properties:
+      RoleName: !Sub "${ProjectName}-GenerateCDCRecordRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        # Provides CloudWatch Logs + the EC2 ENI permissions a VPC Lambda needs.
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Policies:
+        - PolicyName: ReadAuroraSecret
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref AuroraSecret
+
+  GenerateCDCRecordFunction:
+    Type: AWS::Lambda::Function
+    Condition: CreateAurora
+    Properties:
+      FunctionName: !Sub "${ProjectName}-GenerateCDCRecord"
+      Runtime: python3.12
+      Handler: app.handler
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt CDCLambdaRole.Arn
+      Code:
+        S3Bucket: !If
+          - UseDefaultCDCLambdaBucket
+          - Fn::ImportValue: !Sub "${Stream0StackExportPrefix}-ScriptsBucketName"
+          - !Ref CDCLambdaCodeBucket
+        S3Key: !Ref CDCLambdaCodeKey
+      VpcConfig:
+        SubnetIds:
+          - !Ref DBSubnet1
+          - !Ref DBSubnet2
+        SecurityGroupIds:
+          - !Ref CDCLambdaSecurityGroup
+      Environment:
+        Variables:
+          AURORA_SECRET_ARN: !Ref AuroraSecret
+          AURORA_HOST: !GetAtt AuroraDB.Endpoint.Address
+          AURORA_DB_NAME: mdacluster
+          AURORA_PORT: "5432"
+
+  # ===========================================================================
+  # BRANCH 3: Salesforce (SaaS) -> Amazon AppFlow -> raw/salesforce/
+  # Off by default (needs a pre-created Salesforce connector profile).
+  # ===========================================================================
+  SalesforceFlow:
+    Type: AWS::AppFlow::Flow
+    Condition: CreateAppFlow
+    Properties:
+      FlowName: !Sub "${ProjectName}-salesforce-ingest"
+      TriggerConfig:
+        TriggerType: OnDemand
+      SourceFlowConfig:
+        ConnectorType: Salesforce
+        ConnectorProfileName: !Ref SalesforceConnectionName
+        SourceConnectorProperties:
+          Salesforce:
+            Object: !Ref SalesforceObject
+      DestinationFlowConfigList:
+        - ConnectorType: S3
+          DestinationConnectorProperties:
+            S3:
+              BucketName:
+                Fn::ImportValue: !Sub "${Stream0StackExportPrefix}-RawBucketName"
+              BucketPrefix: salesforce
+              S3OutputFormatConfig:
+                FileType: JSON
+      Tasks:
+        - TaskType: Map_all
+          SourceFields: []
+          ConnectorOperator:
+            Salesforce: NO_OP
+
+Outputs:
+
+
+  ProductDataStreamArn:
+    Value: !GetAtt ProductDataStream.Arn
+    Export:
+      Name: !Sub "${ProjectName}-ProductDataStreamArn"
+
+  AuroraEndpoint:
+    Condition: CreateAurora
+    Value: !GetAtt AuroraDB.Endpoint.Address
+    Export:
+      Name: !Sub "${ProjectName}-AuroraEndpoint"
+
+  AuroraSecretArn:
+    Condition: CreateAurora
+    Value: !Ref AuroraSecret
+    Export:
+      Name: !Sub "${ProjectName}-AuroraSecretArn"
+
+  DMSExecutionRoleArn:
+    Condition: CreateAurora
+    Value: !GetAtt DMSExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-DMSExecutionRoleArn"
+
+  DMSReplicationInstanceArn:
+    Condition: CreateAurora
+    Value: !Ref DMSReplicationInstance
+    Export:
+      Name: !Sub "${ProjectName}-DMSReplicationInstanceArn"

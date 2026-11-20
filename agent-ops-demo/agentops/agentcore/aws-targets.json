@@ -1,0 +1,8 @@
+[
+  {
+    "name": "default",
+    "description": "AgentOps demo target (eu-west-1)",
+    "account": "123456789012",
+    "region": "eu-west-1"
+  }
+]

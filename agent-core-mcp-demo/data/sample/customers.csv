@@ -1,0 +1,1001 @@
+customer_id,name,segment,region,onboarded_date,lifetime_value
+CUST-0001,Archie Taylor,Premier,East Midlands,2017-07-03,19767.65
+CUST-0002,Henry Spencer,Retail,North East,2015-05-11,1230.03
+CUST-0003,Ryan Hughes,Retail,London,2021-04-17,5371.52
+CUST-0004,Eleanor Morgan,Retail,West Midlands,2024-01-29,21797.86
+CUST-0005,Freddie Richardson,Retail,South West,2017-05-31,23951.72
+CUST-0006,Sophie Robinson,Retail,South East,2019-01-10,21263.61
+CUST-0007,Ava Davies,Premier,East Anglia,2016-05-26,78118.1
+CUST-0008,Evie Johnson,Premier,Wales,2021-12-08,71981.62
+CUST-0009,Freya Lee,Premier,London,2022-06-01,25952.88
+CUST-0010,Mia Johnson,Private Banking,South East,2019-04-06,175088.12
+CUST-0011,Freya Green,Retail,East Midlands,2022-07-08,7040.96
+CUST-0012,William Harris,Retail,East Midlands,2016-10-31,11825.38
+CUST-0013,Emily Morgan,Premier,London,2017-07-27,67526.18
+CUST-0014,Lily Palmer,Retail,East Midlands,2021-05-12,21971.01
+CUST-0015,Lily James,Premier,North East,2024-12-02,74018.33
+CUST-0016,Sienna Jackson,Retail,East Midlands,2023-05-10,14253.52
+CUST-0017,Ava Richardson,Private Banking,North East,2019-01-22,148694.34
+CUST-0018,Alexander Griffiths,Retail,London,2024-08-28,3186.4
+CUST-0019,Freddie Richardson,Premier,North East,2019-04-13,51712.19
+CUST-0020,Elizabeth Parker,Retail,East Anglia,2024-08-26,23589.56
+CUST-0021,Archie Fox,Premier,Wales,2018-10-25,17808.65
+CUST-0022,Matilda Green,Retail,Northern Ireland,2024-10-27,18132.18
+CUST-0023,Scarlett Cooper,Retail,South East,2024-10-05,15819.85
+CUST-0024,Scarlett Martin,Retail,South West,2021-01-18,23860.74
+CUST-0025,Oliver Carter,Retail,South East,2019-01-26,22028.69
+CUST-0026,Ella Edwards,Retail,Scotland,2015-11-19,2598.51
+CUST-0027,Harriet Thomas,Business,East Anglia,2023-08-03,23235.27
+CUST-0028,Martha Butler,Retail,East Anglia,2024-10-13,15361.55
+CUST-0029,Ryan Spencer,Premier,Northern Ireland,2017-04-03,59906.43
+CUST-0030,Florence Anderson,Retail,East Anglia,2020-01-24,3464.6
+CUST-0031,Lucas Thomas,Retail,Scotland,2021-03-18,6137.81
+CUST-0032,Lucas Smith,Retail,Wales,2015-08-30,6109.07
+CUST-0033,Jacob Phillips,Retail,East Midlands,2018-02-14,16889.96
+CUST-0034,Ryan Spencer,Retail,Scotland,2021-06-18,12080.44
+CUST-0035,Martha Stevens,Retail,South East,2022-05-23,11060.75
+CUST-0036,Phoebe Stevens,Retail,Northern Ireland,2015-08-10,16997.43
+CUST-0037,Alfie Wilson,Retail,North West,2023-12-24,21610.98
+CUST-0038,Amelia Lee,Retail,Yorkshire,2016-07-28,10836.1
+CUST-0039,Sophia O'Brien,Retail,South East,2019-12-21,20296.54
+CUST-0040,Alfie Evans,Premier,East Anglia,2024-05-17,11033.05
+CUST-0041,Leo Edwards,Retail,Yorkshire,2020-05-25,5736.81
+CUST-0042,Florence Wilson,Retail,London,2019-05-19,6997.47
+CUST-0043,Sienna Young,Retail,Northern Ireland,2023-10-14,14116.32
+CUST-0044,Harriet Wright,Retail,East Midlands,2015-08-28,14689.92
+CUST-0045,Thomas Turner,Retail,Scotland,2020-05-06,12819.83
+CUST-0046,Freddie Wilson,Business,South East,2024-07-19,31944.62
+CUST-0047,Oscar Edwards,Retail,Scotland,2017-10-05,14683.52
+CUST-0048,Noah Johnson,Retail,Scotland,2021-05-04,13308.18
+CUST-0049,Ava Clarke,Premier,North West,2017-09-04,28593.02
+CUST-0050,Edward Hall,Retail,South East,2015-02-08,11728.0
+CUST-0051,Alfie Roberts,Retail,East Anglia,2017-12-22,3745.19
+CUST-0052,Daisy Thomas,Private Banking,North West,2018-03-13,120986.07
+CUST-0053,Poppy Parker,Retail,East Anglia,2018-05-11,23328.02
+CUST-0054,Henry Watson,Retail,South East,2023-04-29,14053.98
+CUST-0055,Emily Young,Premier,Northern Ireland,2018-11-05,24251.81
+CUST-0056,Ava Bennett,Retail,London,2016-01-14,16039.97
+CUST-0057,Sophia Davies,Retail,South West,2022-02-22,24505.05
+CUST-0058,Freddie Gray,Premier,North East,2021-04-16,10676.88
+CUST-0059,William Wright,Retail,North West,2021-07-13,14036.86
+CUST-0060,Matilda White,Retail,North West,2023-12-05,24318.81
+CUST-0061,Noah Adams,Retail,East Midlands,2022-06-24,3018.44
+CUST-0062,Lucy Wright,Business,East Midlands,2024-09-11,28562.76
+CUST-0063,Joseph Stevens,Retail,Northern Ireland,2018-09-22,19668.47
+CUST-0064,Lucy Hill,Retail,Northern Ireland,2016-03-18,9872.27
+CUST-0065,Jacob Sullivan,Retail,Yorkshire,2018-12-03,7977.18
+CUST-0066,Dylan Morgan,Retail,East Midlands,2019-06-21,8542.42
+CUST-0067,Oscar Scott,Retail,East Anglia,2019-06-26,17148.19
+CUST-0068,Charlotte Taylor,Retail,West Midlands,2017-01-01,14724.45
+CUST-0069,Ava Brown,Retail,North East,2018-11-16,18349.35
+CUST-0070,Lily Collins,Premier,East Anglia,2016-04-18,36963.68
+CUST-0071,Ethan Moore,Retail,North East,2015-01-07,13238.05
+CUST-0072,Sebastian Campbell,Retail,Wales,2018-09-14,15767.31
+CUST-0073,Joshua Hall,Retail,Wales,2019-07-31,8491.48
+CUST-0074,Mia Butler,Retail,North East,2022-06-16,23538.91
+CUST-0075,Joseph Hall,Retail,London,2018-05-29,7529.39
+CUST-0076,Matilda Carter,Retail,Yorkshire,2022-07-30,5735.68
+CUST-0077,Martha Harris,Premier,West Midlands,2020-10-12,56469.77
+CUST-0078,Charlotte Lewis,Private Banking,East Midlands,2022-07-18,189688.76
+CUST-0079,Sebastian Jackson,Retail,East Midlands,2020-04-30,15476.21
+CUST-0080,William Murphy,Retail,Wales,2021-06-15,5263.66
+CUST-0081,Ruby Singh,Retail,South West,2022-05-11,17346.75
+CUST-0082,Henry Richardson,Retail,Northern Ireland,2020-10-22,11881.47
+CUST-0083,Amelia Thompson,Retail,Yorkshire,2022-06-27,13512.73
+CUST-0084,Lily Gray,Premier,Northern Ireland,2020-08-29,39871.85
+CUST-0085,Millie Green,Premier,Yorkshire,2020-01-18,28143.41
+CUST-0086,Amelia Scott,Premier,East Anglia,2020-06-07,53872.39
+CUST-0087,Sophia Gray,Retail,West Midlands,2017-08-18,7157.02
+CUST-0088,Lily Spencer,Retail,South West,2017-08-05,9884.36
+CUST-0089,Daniel James,Retail,North East,2018-09-17,13793.97
+CUST-0090,Eleanor Wilson,Retail,North East,2019-05-15,22668.54
+CUST-0091,Harry Allen,Retail,North West,2018-05-08,18960.14
+CUST-0092,Eleanor Fox,Premier,East Anglia,2023-12-21,52227.68
+CUST-0093,Lucas Ali,Retail,North East,2020-06-12,1211.11
+CUST-0094,Sophie Palmer,Premier,Yorkshire,2016-06-06,78650.54
+CUST-0095,Jack Bailey,Premier,Wales,2015-04-22,15876.32
+CUST-0096,Phoebe Watson,Private Banking,South West,2015-07-25,167070.34
+CUST-0097,Jessica James,Retail,North West,2023-07-15,22051.18
+CUST-0098,Sophia Bell,Retail,South East,2020-04-10,974.89
+CUST-0099,Charlie Patel,Retail,South East,2023-10-05,23953.5
+CUST-0100,Noah Taylor,Business,East Midlands,2024-05-30,7955.1
+CUST-0101,Daniel Edwards,Retail,Wales,2016-04-13,14317.25
+CUST-0102,Ryan O'Brien,Premier,North West,2016-11-18,52412.49
+CUST-0103,Archie Green,Business,South East,2021-06-28,8723.37
+CUST-0104,Ella Allen,Retail,Northern Ireland,2017-03-23,2361.91
+CUST-0105,Amelia Robinson,Premier,West Midlands,2024-07-14,57898.13
+CUST-0106,Joshua Davies,Retail,North East,2022-06-02,9578.99
+CUST-0107,Scarlett Mitchell,Retail,North East,2024-03-22,12509.94
+CUST-0108,Matilda Campbell,Premier,Yorkshire,2022-12-07,20709.38
+CUST-0109,Joseph Price,Business,West Midlands,2021-11-27,122188.89
+CUST-0110,Sarah O'Brien,Retail,Northern Ireland,2021-08-23,7075.69
+CUST-0111,Amelia Lewis,Retail,Yorkshire,2017-09-25,18886.67
+CUST-0112,Evie Mitchell,Retail,North West,2017-01-14,12444.97
+CUST-0113,Alice Clark,Retail,Scotland,2022-11-12,22062.63
+CUST-0114,George Price,Business,South East,2017-09-15,109410.83
+CUST-0115,Harriet Edwards,Premier,Wales,2022-12-25,44357.49
+CUST-0116,Harry Lewis,Retail,North East,2022-10-04,6460.98
+CUST-0117,Isabella Sullivan,Premier,North West,2019-10-09,79764.2
+CUST-0118,Charlotte Adams,Premier,West Midlands,2018-06-09,27598.26
+CUST-0119,Joshua Lee,Retail,Northern Ireland,2021-01-03,23796.5
+CUST-0120,Arthur Lee,Retail,Yorkshire,2018-02-06,18252.33
+CUST-0121,Grace Walker,Private Banking,West Midlands,2017-07-20,212396.48
+CUST-0122,Poppy Jones,Premier,South West,2018-01-28,13186.1
+CUST-0123,Charlie Butler,Retail,South West,2022-02-25,21777.3
+CUST-0124,Harriet Robinson,Private Banking,Scotland,2018-03-10,261228.63
+CUST-0125,Rosie Mitchell,Retail,London,2017-10-31,23556.06
+CUST-0126,Sarah Wood,Private Banking,North East,2020-07-07,83336.98
+CUST-0127,Charlie Wright,Retail,Scotland,2018-05-29,2586.93
+CUST-0128,Amelia Thompson,Premier,North East,2021-10-19,51728.88
+CUST-0129,Lucas Price,Retail,Yorkshire,2018-05-02,21574.08
+CUST-0130,Phoebe Ward,Premier,London,2021-11-02,77207.61
+CUST-0131,Alfie Clarke,Premier,West Midlands,2022-05-29,15683.12
+CUST-0132,Olivia Cooper,Premier,South West,2015-01-11,38596.23
+CUST-0133,Martha Morris,Retail,West Midlands,2022-12-05,7426.6
+CUST-0134,Sienna Roberts,Premier,West Midlands,2023-11-01,65387.34
+CUST-0135,Sebastian Richardson,Retail,East Midlands,2022-04-06,4150.24
+CUST-0136,Emily Jackson,Retail,South West,2023-11-21,8036.49
+CUST-0137,Grace Gray,Retail,Northern Ireland,2018-05-30,17643.48
+CUST-0138,Emily Bennett,Retail,Yorkshire,2015-11-26,15151.9
+CUST-0139,Matilda Carter,Premier,London,2016-01-10,26024.71
+CUST-0140,Harry Harrison,Premier,South West,2020-04-11,46327.47
+CUST-0141,Rosie Scott,Retail,Scotland,2019-11-21,16052.23
+CUST-0142,Harriet Lewis,Retail,North East,2018-09-27,8365.93
+CUST-0143,Henry Green,Retail,Northern Ireland,2020-07-22,7561.34
+CUST-0144,Florence Butler,Retail,South East,2018-07-12,6683.77
+CUST-0145,Archie Palmer,Private Banking,London,2022-05-17,441215.37
+CUST-0146,Elizabeth Stevens,Retail,East Anglia,2019-01-21,15754.53
+CUST-0147,Imogen Gray,Premier,East Midlands,2017-12-29,48445.37
+CUST-0148,Grace Gray,Private Banking,Yorkshire,2016-05-12,62991.25
+CUST-0149,Olivia Green,Retail,London,2021-03-12,10495.77
+CUST-0150,Lucas Wood,Retail,South East,2022-04-07,20887.51
+CUST-0151,Imogen Morris,Retail,West Midlands,2019-08-29,20950.74
+CUST-0152,Martha Hill,Retail,South West,2019-04-21,5169.95
+CUST-0153,Ivy Watson,Private Banking,West Midlands,2023-08-31,405502.78
+CUST-0154,Eleanor Mitchell,Business,East Anglia,2017-12-30,123979.67
+CUST-0155,Grace Hall,Private Banking,Scotland,2022-05-27,270338.16
+CUST-0156,Daniel Shaw,Retail,North West,2018-09-23,14021.98
+CUST-0157,Evie Murphy,Business,East Midlands,2022-10-27,39626.8
+CUST-0158,Ruby Hughes,Private Banking,North East,2015-06-28,193179.35
+CUST-0159,Martha Allen,Retail,Wales,2023-11-20,20608.32
+CUST-0160,Daniel Singh,Business,South West,2020-08-19,144976.27
+CUST-0161,Charlotte Walker,Private Banking,Yorkshire,2016-02-13,286677.99
+CUST-0162,Sienna Jones,Premier,North East,2024-10-07,55834.69
+CUST-0163,Daniel Roberts,Retail,West Midlands,2018-10-18,15769.86
+CUST-0164,Hannah Johnson,Private Banking,Wales,2024-08-20,290130.04
+CUST-0165,Lily Ali,Private Banking,London,2021-12-04,80789.34
+CUST-0166,Grace Hughes,Premier,North East,2016-02-08,63225.88
+CUST-0167,Alfie Gray,Retail,West Midlands,2015-04-29,1626.78
+CUST-0168,Thomas Morris,Retail,North East,2016-08-19,6482.84
+CUST-0169,Lucy King,Retail,South East,2021-11-01,21835.57
+CUST-0170,Olivia Singh,Business,South West,2017-08-09,71866.74
+CUST-0171,Isla Murphy,Retail,London,2024-01-09,11898.7
+CUST-0172,Grace Spencer,Retail,Yorkshire,2018-11-16,24697.47
+CUST-0173,Poppy Richardson,Premier,Yorkshire,2024-06-24,31148.52
+CUST-0174,Ruby Khan,Retail,North East,2021-05-31,9294.5
+CUST-0175,Mia Morris,Retail,Wales,2019-06-10,7224.77
+CUST-0176,Charlie Singh,Private Banking,West Midlands,2023-09-13,409487.05
+CUST-0177,Alice Morgan,Premier,Scotland,2017-10-23,57443.51
+CUST-0178,Alexander Walker,Business,Wales,2015-06-11,49795.27
+CUST-0179,Rosie Brown,Premier,Northern Ireland,2016-06-22,16309.34
+CUST-0180,Mia Carter,Premier,South West,2017-04-02,19251.19
+CUST-0181,Freya Parker,Retail,West Midlands,2024-04-24,4531.34
+CUST-0182,Sarah Morris,Premier,North West,2024-01-08,18061.88
+CUST-0183,William Jackson,Premier,East Midlands,2024-08-24,57342.66
+CUST-0184,Hannah Campbell,Retail,North East,2015-02-27,6979.24
+CUST-0185,Joshua Murphy,Retail,Northern Ireland,2022-07-16,6922.95
+CUST-0186,Evie Anderson,Retail,East Midlands,2020-04-15,1113.1
+CUST-0187,Jessica Morgan,Premier,Wales,2024-03-28,42498.73
+CUST-0188,Poppy Stevens,Retail,London,2015-06-02,7956.93
+CUST-0189,Imogen Wood,Retail,East Anglia,2016-07-09,10021.82
+CUST-0190,Isabella Spencer,Retail,Northern Ireland,2023-02-24,4285.81
+CUST-0191,Eleanor Walker,Private Banking,Scotland,2019-07-30,472573.88
+CUST-0192,Sophia Brown,Premier,East Midlands,2019-12-22,41128.71
+CUST-0193,Olivia Campbell,Retail,Wales,2019-02-13,13839.41
+CUST-0194,Alice Wilson,Retail,East Midlands,2016-05-15,23750.76
+CUST-0195,Sienna Lewis,Premier,Wales,2022-03-04,51800.22
+CUST-0196,Harry Evans,Premier,East Midlands,2016-05-30,65088.47
+CUST-0197,Adam Thomas,Private Banking,East Anglia,2017-04-28,313872.39
+CUST-0198,Dylan Phillips,Premier,Scotland,2015-01-12,29409.24
+CUST-0199,Samuel White,Retail,South West,2016-03-26,16695.91
+CUST-0200,Jack White,Retail,East Midlands,2021-08-08,8432.4
+CUST-0201,Joseph Clark,Retail,Northern Ireland,2019-09-21,13389.1
+CUST-0202,Oscar Sullivan,Retail,North West,2020-10-03,15044.82
+CUST-0203,Millie Bennett,Retail,Scotland,2015-06-27,18317.45
+CUST-0204,Poppy Murphy,Premier,London,2015-09-07,79901.07
+CUST-0205,Florence Richardson,Premier,Yorkshire,2022-12-27,73679.06
+CUST-0206,William Johnson,Retail,South West,2015-09-27,3591.69
+CUST-0207,Jessica Allen,Business,East Anglia,2018-04-22,70788.74
+CUST-0208,Matilda Walker,Premier,South East,2024-07-25,55829.91
+CUST-0209,Ryan Collins,Retail,East Midlands,2019-08-22,8803.82
+CUST-0210,Sienna Palmer,Retail,South East,2018-07-04,10955.72
+CUST-0211,Isla Anderson,Business,Wales,2020-04-26,14734.33
+CUST-0212,James Lewis,Retail,Northern Ireland,2023-04-15,9629.85
+CUST-0213,Edward Wilson,Premier,East Anglia,2021-04-19,33075.22
+CUST-0214,Joshua Stevens,Retail,Wales,2023-06-01,10861.95
+CUST-0215,Charlie Young,Premier,North West,2016-02-29,50454.3
+CUST-0216,Ryan Wright,Premier,East Midlands,2024-07-02,17575.29
+CUST-0217,Isabella Wood,Premier,Scotland,2017-07-15,66505.5
+CUST-0218,Jack Harrison,Retail,West Midlands,2022-11-18,19179.03
+CUST-0219,Sophie Patel,Retail,South West,2021-05-08,16604.94
+CUST-0220,Oscar Jackson,Premier,London,2016-01-11,62227.82
+CUST-0221,Ryan Allen,Retail,North West,2016-10-06,9566.3
+CUST-0222,Jessica Johnson,Private Banking,South West,2016-10-06,389496.15
+CUST-0223,Charlie Johnson,Retail,Wales,2019-10-03,12398.71
+CUST-0224,Rosie Bell,Retail,East Anglia,2016-04-11,8956.73
+CUST-0225,Archie Young,Premier,Scotland,2020-06-16,46885.39
+CUST-0226,Ella Davies,Retail,Scotland,2015-08-13,688.33
+CUST-0227,Poppy James,Premier,West Midlands,2018-03-31,32968.56
+CUST-0228,Oliver Singh,Premier,South West,2016-06-13,36614.52
+CUST-0229,Dylan Bennett,Premier,Wales,2024-01-16,34791.7
+CUST-0230,Hannah Davies,Retail,Yorkshire,2015-11-15,21621.7
+CUST-0231,Phoebe Palmer,Premier,North East,2018-03-31,18062.14
+CUST-0232,Harry Carter,Retail,Scotland,2020-02-28,20884.63
+CUST-0233,Freya Lewis,Retail,South East,2017-09-23,11174.07
+CUST-0234,Florence Parker,Retail,West Midlands,2023-05-13,8818.08
+CUST-0235,Charlotte Harris,Retail,Wales,2016-04-12,13499.82
+CUST-0236,Ethan Patel,Retail,Wales,2024-02-21,4118.4
+CUST-0237,Henry Jackson,Retail,South West,2021-10-03,4245.31
+CUST-0238,William Cooper,Business,Wales,2020-07-16,72273.19
+CUST-0239,Millie Carter,Private Banking,Wales,2018-07-18,117930.83
+CUST-0240,Oscar Sullivan,Retail,West Midlands,2023-12-06,7229.5
+CUST-0241,Thomas Adams,Retail,West Midlands,2020-03-06,11571.89
+CUST-0242,Thomas Anderson,Private Banking,South East,2022-03-25,438912.52
+CUST-0243,Leo Bennett,Retail,Scotland,2021-03-20,23878.67
+CUST-0244,Noah Shaw,Business,Scotland,2022-04-23,32294.72
+CUST-0245,Martha Bennett,Retail,London,2020-01-20,3035.8
+CUST-0246,Sophie Johnson,Retail,South West,2015-06-10,6569.72
+CUST-0247,Rosie Gray,Retail,Scotland,2016-10-12,9415.5
+CUST-0248,Grace Cook,Retail,North West,2022-08-12,15148.2
+CUST-0249,Charlotte Thomas,Retail,East Anglia,2022-08-10,9970.82
+CUST-0250,Isla Wright,Retail,Scotland,2022-06-11,3965.0
+CUST-0251,Daisy Ward,Business,Northern Ireland,2022-06-05,61833.91
+CUST-0252,James Ward,Premier,Wales,2023-11-17,32993.36
+CUST-0253,Edward Parker,Retail,Wales,2019-10-01,12957.97
+CUST-0254,Harry Campbell,Retail,East Midlands,2018-10-31,23717.87
+CUST-0255,Harriet Lee,Retail,South West,2016-09-26,2390.54
+CUST-0256,Alfie Bennett,Premier,Northern Ireland,2024-11-28,46857.21
+CUST-0257,Sophie White,Premier,South West,2016-10-26,22659.22
+CUST-0258,Benjamin Gray,Retail,North West,2022-08-02,18129.85
+CUST-0259,Rosie Young,Premier,Yorkshire,2017-08-16,47380.78
+CUST-0260,Ella Sullivan,Business,East Midlands,2019-02-15,103354.49
+CUST-0261,Rosie O'Brien,Premier,North East,2020-08-21,46922.19
+CUST-0262,Freddie Martin,Private Banking,South West,2024-10-15,162501.45
+CUST-0263,Sarah Anderson,Premier,South East,2022-12-23,69212.46
+CUST-0264,Joshua Young,Retail,South West,2018-01-22,11508.32
+CUST-0265,Ivy Jackson,Private Banking,South East,2017-06-28,417516.47
+CUST-0266,Daisy Taylor,Retail,North East,2020-08-18,9662.06
+CUST-0267,Ruby Johnson,Retail,London,2018-07-29,23305.23
+CUST-0268,Charlotte Jackson,Retail,West Midlands,2024-04-21,12075.15
+CUST-0269,Alexander Sullivan,Retail,London,2015-11-21,965.6
+CUST-0270,Ryan Wright,Retail,Northern Ireland,2021-10-29,13430.4
+CUST-0271,Archie Young,Retail,South East,2015-07-15,6341.77
+CUST-0272,Sienna Thomas,Retail,Yorkshire,2021-09-10,13633.32
+CUST-0273,Ivy Edwards,Premier,West Midlands,2019-10-25,10109.5
+CUST-0274,Alice Edwards,Premier,South West,2022-06-14,56775.04
+CUST-0275,Freya Thomas,Business,East Anglia,2020-09-09,119029.79
+CUST-0276,Scarlett Butler,Retail,Yorkshire,2015-06-28,16073.93
+CUST-0277,Isabella Moore,Premier,North West,2023-11-04,14729.17
+CUST-0278,Olivia Robinson,Premier,Northern Ireland,2023-06-27,33276.3
+CUST-0279,Noah Adams,Retail,Wales,2016-12-18,20844.4
+CUST-0280,Elizabeth Khan,Premier,South West,2015-09-16,60123.15
+CUST-0281,Sienna Brown,Retail,London,2023-11-15,5387.01
+CUST-0282,Noah Turner,Business,East Anglia,2019-06-20,148422.79
+CUST-0283,Martha Moore,Retail,Wales,2017-02-21,7509.72
+CUST-0284,Charlie Phillips,Retail,North West,2019-11-25,22292.42
+CUST-0285,Rosie Cook,Retail,South West,2020-07-25,17455.68
+CUST-0286,Isabella Price,Retail,South East,2023-02-26,10900.24
+CUST-0287,Matilda King,Retail,North West,2016-02-25,2461.69
+CUST-0288,Mia Ward,Retail,Northern Ireland,2019-10-12,4582.8
+CUST-0289,Rosie Patel,Retail,Northern Ireland,2024-10-03,22834.38
+CUST-0290,Matilda Scott,Premier,London,2015-11-04,56982.87
+CUST-0291,Florence Campbell,Retail,Northern Ireland,2022-08-14,4419.67
+CUST-0292,Jack Jackson,Private Banking,Wales,2023-10-06,247177.77
+CUST-0293,Edward Thomas,Retail,Wales,2019-02-09,9372.69
+CUST-0294,Jacob Wright,Premier,North West,2019-03-04,41075.75
+CUST-0295,William Watson,Retail,North East,2018-07-11,16414.24
+CUST-0296,Amelia Wood,Retail,South West,2020-08-06,13184.76
+CUST-0297,Joshua Clark,Premier,Northern Ireland,2020-01-02,25019.93
+CUST-0298,Grace Ali,Retail,South West,2024-07-25,2314.27
+CUST-0299,Joseph Gray,Business,Wales,2024-06-25,148053.33
+CUST-0300,Daisy Thomas,Retail,West Midlands,2024-12-29,7848.94
+CUST-0301,Freddie Cooper,Premier,East Anglia,2017-07-07,18495.37
+CUST-0302,Sebastian Watson,Retail,Yorkshire,2015-04-18,9341.96
+CUST-0303,Isabella O'Brien,Private Banking,East Anglia,2016-06-15,325376.76
+CUST-0304,Leo Thomas,Retail,Northern Ireland,2023-01-23,12227.3
+CUST-0305,Lucy Stevens,Private Banking,South East,2016-05-28,487570.88
+CUST-0306,William Shaw,Retail,East Anglia,2018-11-12,3644.2
+CUST-0307,Arthur White,Retail,London,2024-04-28,3541.95
+CUST-0308,Daniel Hall,Retail,North West,2022-12-15,6024.02
+CUST-0309,Grace Johnson,Retail,Wales,2021-03-06,7224.05
+CUST-0310,Poppy Fox,Retail,Wales,2016-11-21,14999.31
+CUST-0311,Daniel Harris,Premier,Northern Ireland,2021-10-14,33633.37
+CUST-0312,Noah Taylor,Retail,Wales,2023-08-25,14630.9
+CUST-0313,Adam Bell,Premier,London,2020-08-01,72229.78
+CUST-0314,Mia Hall,Retail,Wales,2019-07-22,7787.13
+CUST-0315,William Wilson,Retail,North East,2020-06-06,11878.83
+CUST-0316,Sophie Jackson,Retail,Northern Ireland,2018-07-31,18487.89
+CUST-0317,Daisy Palmer,Retail,North West,2020-10-10,14260.45
+CUST-0318,Lily Edwards,Retail,West Midlands,2020-01-16,6574.01
+CUST-0319,Alfie Evans,Retail,North East,2024-09-09,15576.75
+CUST-0320,Amelia Green,Private Banking,Scotland,2023-02-01,190721.71
+CUST-0321,Freddie Singh,Business,Yorkshire,2020-08-04,132465.97
+CUST-0322,Imogen Williams,Retail,North East,2020-09-01,11702.15
+CUST-0323,Olivia James,Premier,London,2015-07-27,29694.94
+CUST-0324,Martha Young,Retail,South East,2019-11-01,3781.41
+CUST-0325,Ava Campbell,Premier,North West,2015-07-05,38040.71
+CUST-0326,Ethan Campbell,Premier,South East,2019-05-02,45297.89
+CUST-0327,Sophia Thompson,Retail,South East,2019-06-02,9643.36
+CUST-0328,Sophie Campbell,Premier,East Midlands,2021-10-03,45638.58
+CUST-0329,Scarlett Davies,Retail,South West,2023-01-01,8659.5
+CUST-0330,Martha Price,Retail,Scotland,2020-10-12,3924.63
+CUST-0331,Lily Green,Retail,Scotland,2023-04-17,21143.75
+CUST-0332,Sophie Bennett,Private Banking,East Anglia,2020-06-29,368932.91
+CUST-0333,Poppy Sullivan,Private Banking,North West,2018-09-18,353212.88
+CUST-0334,Eleanor Ward,Premier,Northern Ireland,2024-10-12,58163.06
+CUST-0335,Jack Sullivan,Retail,Wales,2023-10-12,24315.39
+CUST-0336,Dylan Evans,Premier,South West,2020-11-17,54031.77
+CUST-0337,Evie Jackson,Private Banking,East Midlands,2015-05-10,307656.62
+CUST-0338,Archie Lee,Retail,North West,2019-09-12,4210.07
+CUST-0339,Adam Stevens,Retail,Scotland,2020-04-15,21884.03
+CUST-0340,Thomas Watson,Retail,East Anglia,2018-08-24,24954.01
+CUST-0341,Sarah Parker,Retail,South West,2020-02-26,22847.04
+CUST-0342,Sophie Spencer,Retail,Northern Ireland,2022-08-20,16261.07
+CUST-0343,Ava Khan,Retail,East Midlands,2018-02-16,14173.12
+CUST-0344,Lucas Hall,Premier,Northern Ireland,2017-04-29,58316.79
+CUST-0345,Harriet Turner,Retail,East Anglia,2023-12-02,18180.78
+CUST-0346,Grace Thompson,Premier,East Anglia,2019-04-05,72703.23
+CUST-0347,Hannah Patel,Business,South West,2018-04-04,11099.64
+CUST-0348,James Patel,Business,Wales,2017-11-16,113364.08
+CUST-0349,Ryan Martin,Private Banking,West Midlands,2021-04-21,363277.09
+CUST-0350,Alexander Robinson,Premier,Scotland,2017-09-07,26972.06
+CUST-0351,Lucas Hughes,Retail,North East,2018-09-14,18075.27
+CUST-0352,Alfie Watson,Retail,East Anglia,2016-10-08,10469.23
+CUST-0353,Martha Khan,Premier,West Midlands,2018-08-08,29979.07
+CUST-0354,Thomas Lewis,Premier,East Midlands,2020-12-31,61708.06
+CUST-0355,Jacob Cooper,Retail,South West,2015-05-29,24930.71
+CUST-0356,Hannah Singh,Retail,Northern Ireland,2024-10-12,23187.97
+CUST-0357,Jacob Jones,Retail,Scotland,2016-03-15,23247.14
+CUST-0358,Charlotte Young,Retail,Wales,2021-02-03,13345.8
+CUST-0359,Alexander Bennett,Retail,East Midlands,2024-01-26,3259.85
+CUST-0360,Freddie Murphy,Premier,Northern Ireland,2017-02-01,10985.89
+CUST-0361,Sophie Morris,Premier,East Midlands,2016-12-19,52766.81
+CUST-0362,Florence Richardson,Retail,South East,2019-06-30,16896.77
+CUST-0363,Arthur Watson,Retail,East Midlands,2015-01-28,6889.24
+CUST-0364,Olivia Shaw,Premier,North West,2018-05-21,50772.25
+CUST-0365,George Clark,Premier,Northern Ireland,2017-08-25,14348.7
+CUST-0366,Joshua O'Brien,Retail,North East,2022-09-11,12811.75
+CUST-0367,Ella Thompson,Premier,West Midlands,2019-02-14,53023.78
+CUST-0368,Lucas Watson,Retail,Yorkshire,2023-05-21,24726.53
+CUST-0369,Isabella Bell,Premier,Yorkshire,2023-06-30,47626.24
+CUST-0370,Ryan Hill,Premier,Scotland,2024-10-16,65115.95
+CUST-0371,Millie Parker,Premier,South East,2021-04-29,17854.62
+CUST-0372,Scarlett Martin,Premier,South West,2016-11-04,32968.23
+CUST-0373,Rosie Wood,Premier,Northern Ireland,2021-07-16,44217.96
+CUST-0374,Ivy Shaw,Private Banking,Yorkshire,2016-06-24,280961.53
+CUST-0375,Sienna Wilson,Premier,Wales,2024-01-19,31571.87
+CUST-0376,Harry Bailey,Retail,London,2023-05-13,5838.58
+CUST-0377,William Davies,Retail,Northern Ireland,2015-09-19,13758.51
+CUST-0378,Thomas Thomas,Business,Yorkshire,2015-05-10,46628.15
+CUST-0379,Arthur Watson,Premier,Northern Ireland,2022-03-30,77464.78
+CUST-0380,Isabella Allen,Retail,North East,2019-03-19,2466.12
+CUST-0381,Alexander Patel,Retail,East Anglia,2019-05-29,13456.64
+CUST-0382,Lucas Smith,Premier,West Midlands,2020-03-11,57144.99
+CUST-0383,Phoebe Fox,Retail,East Midlands,2017-10-10,11785.32
+CUST-0384,Daniel Scott,Retail,Northern Ireland,2023-08-02,3264.69
+CUST-0385,Eleanor Williams,Retail,South East,2016-02-18,15051.63
+CUST-0386,Millie Evans,Retail,London,2019-07-06,11254.59
+CUST-0387,Ryan Wilson,Retail,West Midlands,2017-08-17,20486.76
+CUST-0388,Lily Carter,Retail,South West,2022-05-28,13270.65
+CUST-0389,Lucy Hall,Retail,East Anglia,2021-08-20,22052.99
+CUST-0390,Joseph Richardson,Premier,London,2018-11-11,75911.05
+CUST-0391,Evie Parker,Retail,North East,2019-07-31,4155.83
+CUST-0392,Evie King,Premier,Yorkshire,2017-09-14,69453.87
+CUST-0393,Poppy Jackson,Private Banking,London,2021-04-22,235704.87
+CUST-0394,Eleanor Parker,Retail,East Midlands,2017-11-10,5481.75
+CUST-0395,James Shaw,Private Banking,South East,2021-01-02,376063.12
+CUST-0396,Ethan Evans,Retail,Wales,2021-10-13,15271.59
+CUST-0397,William Lee,Private Banking,Scotland,2023-02-14,352152.74
+CUST-0398,Ryan Khan,Retail,North West,2018-05-26,23946.98
+CUST-0399,George James,Business,Northern Ireland,2016-04-25,113297.49
+CUST-0400,Sarah Hill,Premier,Northern Ireland,2017-04-17,37764.24
+CUST-0401,Olivia Butler,Retail,West Midlands,2019-04-09,11923.14
+CUST-0402,Alice Ward,Retail,East Anglia,2024-11-24,12683.29
+CUST-0403,Alfie Sullivan,Premier,North West,2017-04-12,35949.34
+CUST-0404,Lucy Davies,Premier,East Midlands,2023-04-25,20214.59
+CUST-0405,Ava Butler,Business,Scotland,2023-01-28,65548.82
+CUST-0406,Daniel Martin,Retail,North East,2021-05-22,20917.39
+CUST-0407,Imogen Butler,Premier,Wales,2018-10-14,28012.87
+CUST-0408,Harriet Ali,Retail,Northern Ireland,2023-12-01,9128.32
+CUST-0409,Alexander Spencer,Retail,East Anglia,2022-03-13,23952.3
+CUST-0410,Jacob Roberts,Business,Wales,2015-07-18,115829.13
+CUST-0411,Lucy Watson,Private Banking,East Midlands,2015-10-06,368226.3
+CUST-0412,George James,Retail,North West,2015-09-05,15636.96
+CUST-0413,Sarah Ali,Retail,East Anglia,2021-03-09,10577.79
+CUST-0414,Harry Parker,Premier,East Anglia,2018-03-20,11199.98
+CUST-0415,Matilda Cooper,Retail,South East,2020-11-17,4147.99
+CUST-0416,Ethan Parker,Retail,North West,2017-12-30,19975.94
+CUST-0417,James Anderson,Business,Yorkshire,2021-05-03,40265.14
+CUST-0418,Lucas Hall,Premier,South East,2022-05-01,79417.23
+CUST-0419,Jacob Lewis,Retail,North East,2021-03-13,12162.12
+CUST-0420,George Harris,Retail,North East,2022-03-26,19717.22
+CUST-0421,Alfie Parker,Business,East Midlands,2017-05-15,135684.58
+CUST-0422,Martha Harrison,Retail,South East,2022-09-04,23176.83
+CUST-0423,Jacob Cooper,Business,North West,2015-03-06,144413.03
+CUST-0424,Samuel Bailey,Business,West Midlands,2016-10-27,86773.94
+CUST-0425,Ruby Spencer,Retail,Northern Ireland,2016-07-27,19867.2
+CUST-0426,James Bennett,Premier,North West,2015-08-08,16838.01
+CUST-0427,Dylan Roberts,Retail,Scotland,2021-09-05,10219.22
+CUST-0428,Jessica Taylor,Premier,Yorkshire,2020-07-02,25969.69
+CUST-0429,Evie Collins,Retail,Scotland,2022-05-30,9811.78
+CUST-0430,Mia Hill,Premier,South East,2018-01-02,20795.47
+CUST-0431,Daniel Cook,Retail,South East,2016-01-10,627.28
+CUST-0432,Ella Gray,Retail,West Midlands,2016-02-23,3746.42
+CUST-0433,Arthur Collins,Retail,East Anglia,2020-09-29,10497.08
+CUST-0434,Jack Lewis,Retail,South East,2021-09-11,15152.07
+CUST-0435,Jessica Cook,Retail,North East,2019-05-08,19589.64
+CUST-0436,Amelia Price,Retail,North East,2016-11-25,3901.58
+CUST-0437,Poppy Harrison,Retail,South East,2016-11-15,11149.57
+CUST-0438,Eleanor Hall,Retail,South East,2019-01-19,6666.64
+CUST-0439,Amelia Singh,Premier,East Midlands,2020-02-19,17488.07
+CUST-0440,Poppy Smith,Business,North West,2024-06-09,94927.87
+CUST-0441,Charlotte Gray,Retail,Wales,2021-08-31,3835.05
+CUST-0442,Jessica Martin,Retail,South West,2019-06-20,24233.77
+CUST-0443,Mia Ali,Business,East Midlands,2018-08-27,59528.02
+CUST-0444,Hannah Campbell,Retail,Scotland,2017-03-29,15009.56
+CUST-0445,Arthur Butler,Retail,Northern Ireland,2020-03-05,23602.89
+CUST-0446,Adam Gray,Premier,Northern Ireland,2015-10-11,67327.59
+CUST-0447,Lucy Singh,Retail,West Midlands,2017-09-18,6690.7
+CUST-0448,Daniel Richardson,Premier,South East,2020-01-14,79349.04
+CUST-0449,Sarah Palmer,Retail,Northern Ireland,2019-09-10,13819.31
+CUST-0450,Freya Fox,Premier,South East,2016-03-23,63826.78
+CUST-0451,Alice Harris,Premier,London,2021-04-25,78852.57
+CUST-0452,Florence Phillips,Business,North East,2016-03-09,6529.43
+CUST-0453,Ava Morgan,Retail,East Anglia,2021-04-04,14722.7
+CUST-0454,Lucas Shaw,Retail,Yorkshire,2023-08-30,17149.11
+CUST-0455,Scarlett Wright,Retail,London,2020-05-31,3061.46
+CUST-0456,Eleanor Johnson,Retail,Northern Ireland,2016-08-03,9034.05
+CUST-0457,Sophie Murphy,Premier,East Anglia,2020-06-01,34381.02
+CUST-0458,Alfie Gray,Premier,Yorkshire,2018-07-30,14702.2
+CUST-0459,Noah Wood,Retail,North West,2022-04-08,3179.39
+CUST-0460,Benjamin Hill,Retail,East Anglia,2016-10-17,8609.25
+CUST-0461,Phoebe O'Brien,Retail,North East,2022-01-23,5019.07
+CUST-0462,Matilda Bailey,Retail,Scotland,2024-11-26,5334.45
+CUST-0463,Phoebe Cook,Retail,East Midlands,2017-04-22,7319.45
+CUST-0464,Oscar Robinson,Premier,East Anglia,2017-02-04,35605.51
+CUST-0465,Sebastian Murphy,Retail,Wales,2024-09-03,12492.36
+CUST-0466,Lily Cook,Premier,Scotland,2016-04-12,34354.72
+CUST-0467,Sienna Cooper,Private Banking,Northern Ireland,2023-12-24,183850.18
+CUST-0468,James Watson,Retail,East Midlands,2018-06-04,3365.25
+CUST-0469,Isabella Jackson,Retail,North East,2021-09-08,3877.75
+CUST-0470,Ruby Richardson,Retail,Wales,2021-01-10,17489.11
+CUST-0471,Joseph Harris,Retail,South West,2017-02-05,8207.21
+CUST-0472,Millie Evans,Private Banking,London,2020-06-07,111440.62
+CUST-0473,Ruby Bennett,Premier,North East,2022-09-05,44420.81
+CUST-0474,Rosie Ali,Retail,Scotland,2015-05-07,19999.08
+CUST-0475,Lucas Morris,Retail,East Midlands,2021-01-11,7572.42
+CUST-0476,Sienna Singh,Retail,South East,2021-06-03,3298.06
+CUST-0477,Freya Spencer,Private Banking,London,2023-07-10,373541.11
+CUST-0478,Ryan Richardson,Retail,Wales,2023-06-05,6564.52
+CUST-0479,Jacob Shaw,Retail,South East,2019-12-04,21699.62
+CUST-0480,Joshua Edwards,Retail,Northern Ireland,2021-08-05,17383.77
+CUST-0481,Phoebe Harris,Premier,East Midlands,2024-02-15,24485.99
+CUST-0482,Thomas Patel,Retail,Scotland,2021-01-15,4625.25
+CUST-0483,Mia Morris,Premier,East Anglia,2022-08-14,67062.66
+CUST-0484,Alexander Stevens,Business,West Midlands,2024-09-21,100104.96
+CUST-0485,Edward Hill,Retail,North West,2024-04-16,6565.09
+CUST-0486,Hannah Ali,Retail,Wales,2018-01-05,15881.41
+CUST-0487,Evie Shaw,Retail,South East,2019-07-09,13132.53
+CUST-0488,Sophia Anderson,Retail,Yorkshire,2018-09-02,14757.91
+CUST-0489,Leo Murphy,Premier,Northern Ireland,2019-01-07,69507.44
+CUST-0490,Hannah James,Business,East Midlands,2020-07-19,43937.84
+CUST-0491,Grace Mitchell,Retail,South West,2021-05-07,21384.35
+CUST-0492,Sophie Evans,Retail,Wales,2023-10-16,20999.2
+CUST-0493,Harry Thompson,Business,South West,2019-12-13,71195.13
+CUST-0494,Phoebe Martin,Business,South West,2024-11-22,99249.59
+CUST-0495,Freddie Scott,Retail,North West,2017-10-22,2519.3
+CUST-0496,Benjamin Evans,Retail,West Midlands,2023-02-21,17636.31
+CUST-0497,Dylan Richardson,Premier,Northern Ireland,2016-01-25,10076.04
+CUST-0498,Sarah Roberts,Retail,East Midlands,2020-10-28,17159.58
+CUST-0499,George Jones,Premier,South East,2024-08-24,39561.98
+CUST-0500,Edward Khan,Retail,North East,2016-01-01,18403.7
+CUST-0501,Henry Robinson,Retail,West Midlands,2016-07-15,9876.67
+CUST-0502,Alexander Jackson,Retail,Scotland,2015-02-04,15452.82
+CUST-0503,Benjamin Gray,Retail,East Midlands,2022-01-16,18832.59
+CUST-0504,Lucy Gray,Private Banking,South East,2016-02-16,113005.91
+CUST-0505,Joshua Cook,Retail,North East,2018-07-12,19881.38
+CUST-0506,Amelia Scott,Premier,East Midlands,2021-03-16,52069.93
+CUST-0507,Grace Taylor,Private Banking,Wales,2024-10-27,185742.2
+CUST-0508,Ivy Lee,Premier,West Midlands,2022-03-31,13819.84
+CUST-0509,Olivia Singh,Retail,East Midlands,2020-08-08,16133.02
+CUST-0510,William Parker,Private Banking,London,2019-01-19,470265.98
+CUST-0511,Edward Cook,Private Banking,Scotland,2019-09-20,214435.61
+CUST-0512,Joseph Sullivan,Business,South East,2015-03-10,90167.71
+CUST-0513,George Clark,Retail,London,2023-11-07,10250.39
+CUST-0514,Grace Bennett,Premier,North East,2022-11-14,38159.42
+CUST-0515,Daniel Scott,Retail,South East,2020-09-25,23062.66
+CUST-0516,Daniel Fox,Retail,Scotland,2022-02-11,19198.99
+CUST-0517,Oscar Ward,Premier,Northern Ireland,2024-06-29,26704.62
+CUST-0518,Amelia Lewis,Business,South East,2020-02-01,93783.04
+CUST-0519,Thomas Ward,Premier,Wales,2023-04-22,22295.21
+CUST-0520,George Watson,Premier,South West,2020-07-26,76711.13
+CUST-0521,Ava Harris,Retail,Northern Ireland,2023-10-05,21899.77
+CUST-0522,Joshua Taylor,Retail,North East,2018-01-19,13334.43
+CUST-0523,Ava Roberts,Retail,East Anglia,2019-01-15,1858.26
+CUST-0524,Benjamin Anderson,Retail,South East,2021-06-08,17015.95
+CUST-0525,Archie Hughes,Premier,London,2015-06-30,70108.23
+CUST-0526,George Hill,Retail,North West,2019-04-18,23045.55
+CUST-0527,Joseph Brown,Premier,Northern Ireland,2023-04-22,55899.23
+CUST-0528,Lucas Carter,Retail,Northern Ireland,2018-08-03,7145.82
+CUST-0529,William Anderson,Retail,Wales,2015-08-04,4893.94
+CUST-0530,Noah Palmer,Retail,Yorkshire,2024-09-17,7416.52
+CUST-0531,Ella Carter,Retail,Yorkshire,2015-02-02,9538.52
+CUST-0532,Mia Hall,Premier,East Midlands,2020-03-15,35779.15
+CUST-0533,Imogen Martin,Premier,East Anglia,2023-07-12,65718.15
+CUST-0534,Daniel Smith,Business,London,2017-08-12,83524.05
+CUST-0535,George Phillips,Retail,Wales,2019-03-22,21300.65
+CUST-0536,Ella Robinson,Retail,East Midlands,2019-09-16,12554.71
+CUST-0537,Thomas Jackson,Premier,South East,2015-06-29,74489.21
+CUST-0538,Lucy Anderson,Retail,Northern Ireland,2015-12-14,14728.88
+CUST-0539,Scarlett Watson,Premier,North East,2015-11-03,51432.7
+CUST-0540,Thomas Collins,Premier,South West,2017-08-27,30417.32
+CUST-0541,Lily Bailey,Premier,Northern Ireland,2018-08-29,32264.04
+CUST-0542,Emily Hughes,Retail,East Midlands,2016-07-11,19608.46
+CUST-0543,Henry Wright,Retail,Yorkshire,2020-03-23,8193.82
+CUST-0544,Joshua Fox,Retail,East Midlands,2020-01-26,8053.54
+CUST-0545,Ava Thompson,Retail,Wales,2018-05-31,20746.47
+CUST-0546,Noah James,Private Banking,North West,2016-08-30,91045.81
+CUST-0547,Amelia Adams,Retail,London,2022-08-05,7821.6
+CUST-0548,Joseph Taylor,Business,Yorkshire,2021-03-27,113471.37
+CUST-0549,Amelia Walker,Retail,South West,2016-05-12,792.94
+CUST-0550,Lucas White,Retail,North East,2019-03-05,17313.99
+CUST-0551,James Clark,Business,South East,2015-03-31,149588.41
+CUST-0552,Sebastian Gray,Private Banking,South East,2024-07-02,423210.28
+CUST-0553,Charlotte Thompson,Retail,Yorkshire,2015-07-27,4615.74
+CUST-0554,Matilda Bailey,Retail,North East,2022-08-30,10953.27
+CUST-0555,Alice James,Business,West Midlands,2018-02-20,69671.66
+CUST-0556,Daniel Brown,Premier,Scotland,2017-10-03,55309.49
+CUST-0557,Imogen Stevens,Private Banking,Yorkshire,2015-09-07,89474.7
+CUST-0558,Ruby Watson,Retail,Wales,2024-12-02,20031.35
+CUST-0559,Amelia Spencer,Premier,North East,2023-10-08,59935.95
+CUST-0560,Sarah Spencer,Premier,North West,2021-05-05,45167.53
+CUST-0561,Ruby Harrison,Retail,North West,2021-09-11,5865.99
+CUST-0562,Sophia Wilson,Private Banking,Yorkshire,2020-12-08,210844.8
+CUST-0563,Dylan Green,Retail,Wales,2017-09-14,7029.91
+CUST-0564,Thomas Morgan,Premier,North East,2018-12-24,75464.42
+CUST-0565,Joseph Cooper,Retail,North West,2024-01-16,18583.57
+CUST-0566,Alice Taylor,Premier,North West,2021-05-14,49452.45
+CUST-0567,Ethan Singh,Retail,South West,2020-07-01,1430.11
+CUST-0568,Thomas Hughes,Premier,London,2020-11-26,43459.23
+CUST-0569,Charlotte Martin,Private Banking,North West,2023-01-15,129856.94
+CUST-0570,Jessica Wilson,Retail,Scotland,2022-11-26,22971.99
+CUST-0571,Archie Parker,Private Banking,South East,2019-03-11,367042.1
+CUST-0572,Hannah Walker,Retail,North West,2016-07-12,24408.59
+CUST-0573,Matilda Ali,Premier,South West,2022-12-06,77812.0
+CUST-0574,Alice Morgan,Premier,South West,2019-03-30,31477.63
+CUST-0575,Mia White,Retail,London,2022-11-15,23743.1
+CUST-0576,Hannah Brown,Retail,North West,2024-01-26,24204.53
+CUST-0577,Lucas Robinson,Business,South West,2018-09-18,113074.78
+CUST-0578,Olivia Patel,Business,South West,2022-02-18,133371.44
+CUST-0579,Leo Phillips,Retail,West Midlands,2017-05-08,6613.75
+CUST-0580,Oscar Patel,Retail,South East,2023-01-29,531.39
+CUST-0581,Ruby Gray,Premier,South West,2024-12-02,38981.34
+CUST-0582,Evie Patel,Retail,South East,2024-04-17,12247.49
+CUST-0583,Lucas Green,Retail,London,2018-04-22,991.91
+CUST-0584,Ava Robinson,Retail,South West,2024-12-15,9698.72
+CUST-0585,William Butler,Business,South East,2018-10-16,91134.43
+CUST-0586,Sarah Taylor,Retail,Wales,2016-11-06,15379.28
+CUST-0587,Matilda Green,Retail,North West,2017-04-21,24372.76
+CUST-0588,Lucy Butler,Premier,Northern Ireland,2021-01-21,28568.53
+CUST-0589,Grace Hall,Retail,London,2019-05-29,14508.36
+CUST-0590,Harriet Wright,Retail,London,2019-10-18,2646.89
+CUST-0591,Sarah Martin,Retail,East Midlands,2016-11-30,16135.67
+CUST-0592,James Sullivan,Private Banking,West Midlands,2023-10-20,228860.31
+CUST-0593,Harriet Clark,Retail,East Anglia,2019-05-07,5029.59
+CUST-0594,Evie Anderson,Retail,London,2017-12-14,11273.64
+CUST-0595,Ava Morgan,Private Banking,Scotland,2015-09-10,118008.8
+CUST-0596,Alfie Johnson,Premier,East Anglia,2019-08-23,77949.39
+CUST-0597,Dylan Butler,Retail,North East,2024-03-06,13303.27
+CUST-0598,Martha Edwards,Retail,South East,2019-06-06,22618.04
+CUST-0599,Jacob Bennett,Premier,East Anglia,2023-12-23,50003.98
+CUST-0600,Samuel Thompson,Business,Yorkshire,2016-12-09,142613.92
+CUST-0601,Benjamin James,Private Banking,South West,2015-06-24,240518.7
+CUST-0602,Matilda Martin,Business,Wales,2016-08-28,125945.68
+CUST-0603,Ava Turner,Business,South East,2015-12-23,61274.38
+CUST-0604,Hannah Butler,Retail,West Midlands,2020-10-29,11724.85
+CUST-0605,George Price,Premier,South East,2019-08-25,20474.96
+CUST-0606,Alfie Robinson,Premier,South East,2023-10-24,30026.5
+CUST-0607,Daisy Stevens,Retail,Wales,2020-06-11,14514.57
+CUST-0608,Martha Brown,Retail,North East,2016-08-12,15646.99
+CUST-0609,Florence Brown,Retail,North West,2022-09-29,6320.69
+CUST-0610,Martha Harrison,Private Banking,London,2018-10-15,417823.67
+CUST-0611,Poppy Ward,Retail,Yorkshire,2024-08-16,17556.48
+CUST-0612,Alfie Hughes,Retail,Northern Ireland,2019-12-20,19463.76
+CUST-0613,Jessica Harrison,Premier,Scotland,2022-03-29,16250.08
+CUST-0614,Rosie James,Business,North East,2023-04-23,75246.75
+CUST-0615,Isabella Wilson,Retail,South West,2015-09-26,8122.52
+CUST-0616,Scarlett Palmer,Retail,East Anglia,2024-11-10,14432.47
+CUST-0617,Joseph Lee,Private Banking,East Midlands,2024-05-21,75932.38
+CUST-0618,Jacob Murphy,Retail,North West,2022-11-26,5378.19
+CUST-0619,Isabella O'Brien,Retail,Wales,2016-05-22,17188.77
+CUST-0620,Olivia Anderson,Retail,Yorkshire,2016-12-28,24032.75
+CUST-0621,Martha Butler,Retail,South West,2024-05-24,22415.05
+CUST-0622,Leo Young,Retail,London,2016-10-29,21418.62
+CUST-0623,Ryan Morgan,Premier,Wales,2017-04-26,28835.85
+CUST-0624,Lucy Griffiths,Retail,Wales,2015-02-06,12115.38
+CUST-0625,Edward Cooper,Premier,London,2017-07-05,27667.33
+CUST-0626,Ella Scott,Retail,North East,2024-07-20,9043.38
+CUST-0627,Isla James,Retail,Wales,2020-11-02,20695.62
+CUST-0628,Hannah Robinson,Retail,Wales,2024-06-16,21064.77
+CUST-0629,Grace Hall,Premier,Yorkshire,2015-09-19,33539.86
+CUST-0630,Sophia Carter,Private Banking,West Midlands,2022-05-11,369992.2
+CUST-0631,Poppy Lee,Retail,East Midlands,2015-08-21,20233.03
+CUST-0632,Florence Turner,Premier,Northern Ireland,2015-04-15,55878.04
+CUST-0633,Mia Clark,Business,North East,2019-05-10,111826.15
+CUST-0634,Ethan Mitchell,Premier,East Midlands,2022-09-12,47424.46
+CUST-0635,Martha Adams,Retail,South West,2024-06-05,16611.56
+CUST-0636,Arthur Morris,Retail,South West,2023-04-23,6836.97
+CUST-0637,Arthur Phillips,Premier,East Midlands,2018-12-26,25632.95
+CUST-0638,Ella Bell,Premier,North West,2019-03-03,28239.15
+CUST-0639,Mia O'Brien,Private Banking,Yorkshire,2015-08-08,439877.02
+CUST-0640,William Sullivan,Private Banking,East Anglia,2016-05-05,440373.99
+CUST-0641,Evie Parker,Retail,London,2024-10-06,21428.87
+CUST-0642,Alexander Martin,Retail,Scotland,2020-02-18,4008.99
+CUST-0643,Arthur Johnson,Retail,Wales,2016-12-25,8178.64
+CUST-0644,Thomas Smith,Retail,East Midlands,2023-07-15,19451.79
+CUST-0645,Freddie Ali,Premier,South East,2016-06-14,53013.58
+CUST-0646,Phoebe Palmer,Retail,Yorkshire,2019-04-20,614.39
+CUST-0647,Sebastian Anderson,Business,North West,2023-06-28,125818.16
+CUST-0648,Ethan Williams,Premier,Wales,2023-03-24,27417.62
+CUST-0649,Daisy Ward,Retail,North East,2020-08-23,14922.43
+CUST-0650,Benjamin Thomas,Private Banking,West Midlands,2018-04-06,255166.84
+CUST-0651,Sophie Collins,Private Banking,South West,2018-11-04,498262.51
+CUST-0652,Harriet Adams,Premier,South West,2024-02-08,38237.42
+CUST-0653,Dylan Morgan,Premier,South West,2017-05-15,61385.36
+CUST-0654,Scarlett Harris,Retail,Northern Ireland,2022-04-18,19907.12
+CUST-0655,Evie Moore,Premier,Scotland,2015-07-19,51574.68
+CUST-0656,Charlie Robinson,Premier,London,2015-07-17,58282.48
+CUST-0657,Eleanor Gray,Retail,East Anglia,2017-11-01,12122.71
+CUST-0658,Daniel Clarke,Premier,Wales,2015-02-08,31078.15
+CUST-0659,Alfie Price,Retail,Scotland,2022-11-10,3860.51
+CUST-0660,Henry Griffiths,Premier,South East,2018-03-03,17980.88
+CUST-0661,Henry Singh,Retail,East Midlands,2023-09-22,6943.35
+CUST-0662,Sebastian Adams,Premier,West Midlands,2016-10-18,12758.4
+CUST-0663,Imogen Clarke,Premier,Yorkshire,2018-09-16,26415.37
+CUST-0664,George Lewis,Business,Scotland,2022-07-03,76645.08
+CUST-0665,Leo Griffiths,Retail,Northern Ireland,2016-02-19,22667.09
+CUST-0666,Dylan Murphy,Business,West Midlands,2017-12-17,72320.22
+CUST-0667,Alfie Cooper,Private Banking,West Midlands,2019-01-15,410718.25
+CUST-0668,Lily Richardson,Premier,South East,2024-07-18,63074.28
+CUST-0669,Noah Jones,Private Banking,Wales,2022-04-04,126730.52
+CUST-0670,Alice Gray,Business,West Midlands,2024-11-07,111294.85
+CUST-0671,Isabella Mitchell,Retail,North East,2019-06-28,24076.59
+CUST-0672,Emily Cook,Premier,Yorkshire,2023-12-21,39521.79
+CUST-0673,Benjamin Wood,Retail,Northern Ireland,2015-08-29,24548.44
+CUST-0674,Freddie Robinson,Retail,Scotland,2020-05-31,20155.49
+CUST-0675,Rosie King,Premier,North West,2021-11-09,12017.14
+CUST-0676,Edward Khan,Business,South East,2024-12-14,64636.22
+CUST-0677,Noah Thomas,Retail,North West,2015-02-20,17761.92
+CUST-0678,Lucas Mitchell,Retail,Northern Ireland,2022-11-09,15646.86
+CUST-0679,Matilda Hill,Retail,Wales,2022-08-02,16214.41
+CUST-0680,Daniel Evans,Retail,South West,2020-09-01,21296.72
+CUST-0681,Imogen Harris,Retail,Yorkshire,2018-08-06,6401.85
+CUST-0682,Sophia Evans,Retail,East Anglia,2022-03-20,9776.62
+CUST-0683,Olivia Johnson,Retail,Scotland,2020-01-10,2656.49
+CUST-0684,Imogen Shaw,Retail,Yorkshire,2023-05-11,16507.64
+CUST-0685,Henry Palmer,Retail,East Anglia,2021-02-27,504.16
+CUST-0686,Leo Hall,Private Banking,East Anglia,2017-04-27,344568.19
+CUST-0687,Sienna Mitchell,Retail,London,2024-02-27,5961.49
+CUST-0688,Sienna Phillips,Premier,Scotland,2021-09-23,43119.36
+CUST-0689,Freya Shaw,Retail,Wales,2017-06-27,553.83
+CUST-0690,Alice Morris,Retail,North West,2022-11-15,3104.89
+CUST-0691,Benjamin Singh,Retail,Northern Ireland,2023-04-30,18178.2
+CUST-0692,Henry Moore,Premier,East Midlands,2016-05-09,75115.14
+CUST-0693,Hannah James,Retail,East Midlands,2023-01-14,8779.37
+CUST-0694,Eleanor Davies,Business,Wales,2021-08-08,22866.78
+CUST-0695,Millie Murphy,Premier,East Anglia,2016-07-05,77469.83
+CUST-0696,Oliver Parker,Premier,East Anglia,2019-11-08,68717.13
+CUST-0697,Sarah Griffiths,Premier,South West,2022-10-04,50498.81
+CUST-0698,Edward Robinson,Retail,Scotland,2021-10-18,22126.05
+CUST-0699,Scarlett Cook,Retail,Scotland,2022-10-07,19178.18
+CUST-0700,Sophia Bailey,Business,West Midlands,2020-01-29,121695.54
+CUST-0701,Alexander Stevens,Premier,Northern Ireland,2020-09-29,30923.92
+CUST-0702,Lily Butler,Premier,East Midlands,2017-05-08,53691.73
+CUST-0703,Mia Patel,Business,South West,2022-12-19,99262.53
+CUST-0704,Joseph Bennett,Retail,Wales,2018-08-13,17903.64
+CUST-0705,Alice Khan,Premier,Wales,2022-12-18,39223.46
+CUST-0706,Grace Richardson,Private Banking,East Anglia,2016-03-12,61372.46
+CUST-0707,Samuel Evans,Premier,East Midlands,2017-12-29,62512.95
+CUST-0708,Freddie Young,Premier,South West,2024-05-31,14342.3
+CUST-0709,Mia Clarke,Premier,London,2019-01-09,66981.84
+CUST-0710,Henry Morgan,Premier,East Anglia,2019-05-12,26631.68
+CUST-0711,Grace Evans,Business,North East,2019-09-03,143721.79
+CUST-0712,Lily Butler,Retail,Northern Ireland,2017-10-26,5475.64
+CUST-0713,Rosie Morgan,Business,Northern Ireland,2022-12-16,98906.7
+CUST-0714,Sebastian Lee,Retail,South West,2022-08-28,2324.49
+CUST-0715,Joseph Griffiths,Retail,London,2019-10-22,7338.25
+CUST-0716,Ava White,Retail,West Midlands,2015-01-24,8598.79
+CUST-0717,Daniel Davies,Retail,North West,2021-09-10,1745.96
+CUST-0718,Poppy Ali,Premier,East Anglia,2019-01-06,15101.66
+CUST-0719,Lily Parker,Retail,South West,2020-11-02,2170.32
+CUST-0720,Scarlett Green,Retail,East Anglia,2019-07-11,2752.67
+CUST-0721,Lucas James,Premier,North West,2019-01-17,30550.21
+CUST-0722,Martha Jones,Retail,North West,2019-12-31,6388.52
+CUST-0723,Amelia Davies,Premier,North West,2019-04-12,74115.27
+CUST-0724,Archie Cook,Retail,Northern Ireland,2018-03-04,1105.29
+CUST-0725,Isabella Griffiths,Private Banking,Yorkshire,2020-06-16,69733.25
+CUST-0726,Ethan Carter,Retail,South East,2016-11-16,24304.9
+CUST-0727,Oliver Thomas,Retail,Wales,2023-09-04,5722.79
+CUST-0728,Phoebe Robinson,Retail,Northern Ireland,2024-11-07,24417.49
+CUST-0729,Matilda Roberts,Premier,South West,2015-04-08,42145.77
+CUST-0730,Charlotte Brown,Retail,London,2016-12-30,19958.26
+CUST-0731,William Hughes,Business,North East,2019-05-09,70413.22
+CUST-0732,Florence Collins,Retail,North East,2022-07-20,3398.49
+CUST-0733,Oliver Thomas,Premier,Scotland,2015-07-06,59061.74
+CUST-0734,William Adams,Business,South East,2018-04-02,119099.33
+CUST-0735,Poppy Lewis,Retail,Yorkshire,2019-04-12,10180.27
+CUST-0736,Jack Sullivan,Retail,East Midlands,2016-07-12,18795.47
+CUST-0737,Mia Jackson,Retail,Northern Ireland,2022-04-07,9641.7
+CUST-0738,George Butler,Private Banking,South West,2016-05-19,68797.91
+CUST-0739,Hannah Fox,Retail,South East,2018-06-02,5646.3
+CUST-0740,Daisy James,Retail,Wales,2024-07-19,13057.54
+CUST-0741,Freddie King,Retail,West Midlands,2017-03-06,3308.25
+CUST-0742,Charlie Butler,Retail,East Anglia,2015-10-27,7620.99
+CUST-0743,Oscar Moore,Retail,Northern Ireland,2021-07-06,12436.17
+CUST-0744,Charlotte Adams,Retail,Wales,2017-08-18,2951.1
+CUST-0745,Oscar Lee,Retail,Yorkshire,2018-09-06,15600.39
+CUST-0746,Ella Wright,Premier,North West,2024-01-22,32143.32
+CUST-0747,Phoebe Harris,Retail,East Midlands,2023-10-24,5927.38
+CUST-0748,Matilda Scott,Private Banking,South West,2022-08-15,379837.76
+CUST-0749,Sarah O'Brien,Retail,West Midlands,2020-06-17,14015.96
+CUST-0750,Joseph Johnson,Private Banking,South West,2024-12-29,292378.12
+CUST-0751,Ava Roberts,Premier,London,2024-07-11,45502.48
+CUST-0752,Jack Palmer,Premier,East Midlands,2015-05-31,48611.58
+CUST-0753,Martha Wright,Retail,East Midlands,2024-12-30,19417.55
+CUST-0754,Mia Watson,Retail,East Anglia,2016-01-06,10221.24
+CUST-0755,Scarlett Jones,Premier,Scotland,2022-09-03,21609.05
+CUST-0756,Ivy Watson,Retail,South West,2021-05-08,23743.44
+CUST-0757,Samuel Khan,Business,London,2017-06-15,115413.49
+CUST-0758,Dylan Thomas,Retail,East Midlands,2015-06-25,16880.35
+CUST-0759,Freya Cook,Retail,Yorkshire,2024-11-19,1637.72
+CUST-0760,Jessica Robinson,Premier,East Anglia,2022-02-08,68075.3
+CUST-0761,Ava Spencer,Premier,North East,2022-05-01,36496.3
+CUST-0762,William Price,Retail,East Midlands,2020-10-16,10443.13
+CUST-0763,Daisy Ali,Premier,Scotland,2015-01-28,45128.59
+CUST-0764,Alexander Gray,Retail,South East,2020-10-08,16265.19
+CUST-0765,Ryan Wright,Retail,North West,2021-10-01,18073.92
+CUST-0766,Joshua Hughes,Retail,North West,2023-01-29,3276.8
+CUST-0767,Sarah Khan,Retail,South West,2022-04-05,20917.44
+CUST-0768,Harry Hill,Retail,Scotland,2021-08-23,4447.66
+CUST-0769,Ivy Davies,Private Banking,South West,2015-08-18,124853.61
+CUST-0770,Arthur Price,Business,Scotland,2021-04-27,97455.29
+CUST-0771,Grace Johnson,Retail,Scotland,2020-04-14,21748.91
+CUST-0772,Benjamin Morgan,Private Banking,Scotland,2016-08-07,407577.23
+CUST-0773,Arthur Griffiths,Retail,Northern Ireland,2022-09-09,8895.45
+CUST-0774,Sienna Thomas,Retail,North East,2016-06-25,3159.97
+CUST-0775,Sebastian Price,Private Banking,East Anglia,2022-09-04,238907.76
+CUST-0776,Daniel Walker,Retail,Scotland,2021-09-22,1456.4
+CUST-0777,Scarlett Thompson,Retail,Wales,2016-06-17,22598.63
+CUST-0778,Oliver Collins,Retail,North West,2024-10-23,1564.24
+CUST-0779,Phoebe Hughes,Business,Yorkshire,2023-11-09,116457.39
+CUST-0780,Daisy Walker,Retail,West Midlands,2020-05-08,19263.54
+CUST-0781,James Young,Premier,East Anglia,2019-08-01,28046.35
+CUST-0782,Oliver Smith,Premier,South East,2020-10-29,10503.58
+CUST-0783,Adam Turner,Retail,South East,2016-09-25,10938.75
+CUST-0784,Isla Clark,Private Banking,North East,2021-05-01,214539.84
+CUST-0785,Sophia Bailey,Premier,North East,2021-03-11,64865.19
+CUST-0786,Sarah Cooper,Retail,East Anglia,2020-06-04,6717.55
+CUST-0787,Ella Patel,Premier,North East,2023-04-02,19664.8
+CUST-0788,Joshua Hughes,Retail,Northern Ireland,2016-10-24,2956.83
+CUST-0789,Ivy Palmer,Premier,East Anglia,2021-11-20,58794.02
+CUST-0790,Charlie Green,Retail,Wales,2015-01-22,20207.05
+CUST-0791,Samuel Sullivan,Business,North East,2015-12-28,14291.67
+CUST-0792,Lucas Anderson,Retail,London,2023-02-15,9915.99
+CUST-0793,Florence Price,Retail,Scotland,2015-08-24,23670.04
+CUST-0794,Joseph Singh,Retail,East Midlands,2024-07-15,16593.66
+CUST-0795,Grace Lee,Retail,Scotland,2020-09-22,13137.43
+CUST-0796,Dylan Harris,Premier,North West,2017-09-06,55851.34
+CUST-0797,Freddie Lewis,Business,North East,2018-12-17,102101.0
+CUST-0798,Florence Martin,Retail,Northern Ireland,2022-11-22,2181.12
+CUST-0799,Leo Butler,Retail,East Anglia,2021-07-15,9028.33
+CUST-0800,Sophia Morgan,Premier,East Midlands,2020-02-06,75079.97
+CUST-0801,Oliver Clark,Retail,East Anglia,2016-03-12,14186.45
+CUST-0802,Scarlett Morris,Retail,South East,2024-01-02,13075.52
+CUST-0803,Isla Fox,Private Banking,Scotland,2017-10-21,362386.34
+CUST-0804,Evie Khan,Premier,North West,2023-09-12,42119.39
+CUST-0805,Sienna Taylor,Retail,West Midlands,2015-10-04,9875.49
+CUST-0806,Lucas Hughes,Private Banking,North East,2018-12-17,282426.9
+CUST-0807,George Clark,Retail,South East,2019-06-23,17005.6
+CUST-0808,Sophie Roberts,Premier,South West,2020-05-05,31971.09
+CUST-0809,Ryan Harrison,Retail,Northern Ireland,2022-08-30,23291.25
+CUST-0810,Ethan Singh,Premier,East Midlands,2023-04-01,26943.96
+CUST-0811,Ava Clarke,Retail,East Midlands,2024-05-18,15655.62
+CUST-0812,Daniel Robinson,Retail,South East,2022-07-31,23916.6
+CUST-0813,Imogen Smith,Premier,East Anglia,2015-06-23,69360.74
+CUST-0814,Isabella Turner,Retail,Scotland,2024-09-28,7230.96
+CUST-0815,Arthur Griffiths,Retail,East Midlands,2023-05-31,14628.3
+CUST-0816,Charlie Parker,Premier,Yorkshire,2021-01-23,12279.39
+CUST-0817,Daisy Bailey,Private Banking,South West,2020-02-16,489428.24
+CUST-0818,Sienna Turner,Premier,London,2022-07-24,24752.67
+CUST-0819,Alfie Carter,Retail,West Midlands,2017-02-05,13939.8
+CUST-0820,Olivia Harrison,Retail,Scotland,2018-11-06,9465.14
+CUST-0821,Imogen Richardson,Retail,Northern Ireland,2023-06-08,9621.59
+CUST-0822,Florence Scott,Retail,Scotland,2016-06-21,24492.18
+CUST-0823,Dylan Walker,Premier,East Midlands,2021-03-24,40255.31
+CUST-0824,Evie Martin,Retail,Northern Ireland,2016-09-04,12088.18
+CUST-0825,George Cooper,Retail,South West,2024-07-11,15950.97
+CUST-0826,Lily Ali,Retail,East Anglia,2024-08-17,14411.95
+CUST-0827,Hannah Walker,Premier,London,2017-06-01,66967.26
+CUST-0828,Martha Walker,Retail,North West,2017-11-30,9343.57
+CUST-0829,Isla Patel,Retail,South East,2018-12-09,21750.53
+CUST-0830,Sebastian Fox,Retail,West Midlands,2018-12-25,8464.71
+CUST-0831,Ivy Ali,Premier,Yorkshire,2024-12-22,15488.53
+CUST-0832,Grace O'Brien,Premier,South West,2024-09-26,21730.29
+CUST-0833,Sophie Bell,Premier,Scotland,2019-07-16,69423.05
+CUST-0834,William Johnson,Retail,East Midlands,2018-07-08,8263.52
+CUST-0835,Mia Harrison,Premier,North East,2018-01-16,72138.43
+CUST-0836,Freya Price,Business,North East,2016-11-16,31663.5
+CUST-0837,Harry White,Premier,Wales,2017-10-27,75830.61
+CUST-0838,James Clarke,Retail,South East,2016-01-27,2062.91
+CUST-0839,Martha Butler,Retail,North East,2020-11-16,19242.41
+CUST-0840,James Robinson,Retail,South West,2015-12-12,16543.4
+CUST-0841,Ruby Ward,Retail,Northern Ireland,2018-03-09,11357.43
+CUST-0842,Edward White,Retail,South West,2015-04-28,1361.3
+CUST-0843,Alice Carter,Private Banking,Yorkshire,2024-10-07,293262.87
+CUST-0844,Emily Butler,Retail,Northern Ireland,2021-01-17,4837.4
+CUST-0845,Sienna Collins,Retail,Wales,2020-12-26,8086.7
+CUST-0846,Daisy Khan,Retail,South East,2019-12-15,8042.77
+CUST-0847,Lucy Clark,Retail,London,2015-01-01,13321.25
+CUST-0848,Alexander Patel,Retail,East Anglia,2015-02-04,17350.36
+CUST-0849,Harriet Khan,Retail,North East,2023-12-13,7676.6
+CUST-0850,Dylan Smith,Retail,East Midlands,2019-08-14,22112.97
+CUST-0851,Matilda Bailey,Retail,Northern Ireland,2023-04-08,16326.77
+CUST-0852,Evie Morgan,Retail,North East,2022-01-05,6369.26
+CUST-0853,Emily Young,Premier,East Anglia,2024-01-26,28817.54
+CUST-0854,Ethan Thomas,Retail,West Midlands,2016-03-28,16103.87
+CUST-0855,Millie Harrison,Premier,Yorkshire,2017-02-08,32445.06
+CUST-0856,Daniel Evans,Business,London,2017-01-31,145988.23
+CUST-0857,Grace Harrison,Retail,Yorkshire,2023-02-26,701.0
+CUST-0858,Leo Wright,Retail,East Midlands,2018-11-01,10795.95
+CUST-0859,Imogen Anderson,Retail,London,2018-09-14,2465.47
+CUST-0860,Samuel Wilson,Retail,North East,2015-10-20,13808.2
+CUST-0861,Arthur Lee,Private Banking,West Midlands,2024-03-01,221709.83
+CUST-0862,George Thompson,Business,Northern Ireland,2017-10-16,60795.7
+CUST-0863,Rosie Hill,Premier,London,2017-03-26,42258.42
+CUST-0864,Alfie Price,Premier,East Midlands,2020-04-20,37238.61
+CUST-0865,Ella Carter,Retail,Northern Ireland,2015-06-22,18745.75
+CUST-0866,Joshua Moore,Retail,West Midlands,2017-03-24,9330.45
+CUST-0867,Charlie James,Business,East Midlands,2022-02-05,67953.44
+CUST-0868,George Harris,Premier,Scotland,2016-05-05,37706.58
+CUST-0869,Amelia Jones,Business,Scotland,2023-10-15,105158.96
+CUST-0870,Daniel Anderson,Premier,East Midlands,2016-10-07,44994.34
+CUST-0871,Sophie Wilson,Retail,Wales,2016-09-22,17682.54
+CUST-0872,Henry White,Retail,North West,2021-04-06,19819.76
+CUST-0873,Daisy Gray,Premier,London,2022-09-24,36443.83
+CUST-0874,Alexander Moore,Private Banking,Yorkshire,2022-12-04,246875.0
+CUST-0875,Mia Spencer,Premier,East Midlands,2021-05-10,23063.87
+CUST-0876,Daisy Carter,Premier,West Midlands,2024-09-23,68194.47
+CUST-0877,Freddie Thomas,Retail,Yorkshire,2018-04-26,20575.75
+CUST-0878,Freya Murphy,Retail,Wales,2020-09-03,9786.57
+CUST-0879,Arthur Williams,Premier,North West,2023-09-14,53413.81
+CUST-0880,Jessica Thomas,Premier,East Anglia,2024-03-08,37124.36
+CUST-0881,Imogen Butler,Retail,West Midlands,2018-08-14,10540.21
+CUST-0882,Jessica Wood,Retail,Wales,2015-10-01,1572.54
+CUST-0883,Edward Cooper,Private Banking,East Midlands,2016-03-14,268416.63
+CUST-0884,Alfie Brown,Premier,North East,2022-05-18,44293.67
+CUST-0885,Isla Evans,Retail,Scotland,2023-01-19,2236.41
+CUST-0886,Adam Ali,Business,South East,2020-04-01,121147.89
+CUST-0887,Thomas Campbell,Premier,North East,2024-03-21,35834.81
+CUST-0888,Thomas Harrison,Retail,Northern Ireland,2015-10-16,20944.18
+CUST-0889,William James,Business,South East,2016-02-19,110149.93
+CUST-0890,Ruby Lee,Retail,Wales,2017-10-15,14465.68
+CUST-0891,Joseph Bell,Premier,Wales,2021-06-19,35057.44
+CUST-0892,Sienna Richardson,Private Banking,South West,2023-11-20,131178.44
+CUST-0893,Florence Bennett,Retail,South West,2020-12-26,24961.62
+CUST-0894,Rosie Adams,Business,East Anglia,2018-08-22,127503.83
+CUST-0895,Lucy Collins,Private Banking,North West,2021-10-28,158325.15
+CUST-0896,Ryan Allen,Premier,Northern Ireland,2017-11-06,35200.6
+CUST-0897,Millie Shaw,Business,London,2023-02-22,10026.12
+CUST-0898,Grace Williams,Retail,West Midlands,2015-01-27,7858.18
+CUST-0899,Lucas James,Private Banking,London,2023-08-27,419872.97
+CUST-0900,Sophia Butler,Retail,Scotland,2021-05-30,4290.51
+CUST-0901,Jacob Murphy,Retail,South West,2017-12-21,9493.53
+CUST-0902,Amelia Hughes,Retail,West Midlands,2016-01-12,14476.94
+CUST-0903,Ryan Roberts,Premier,Yorkshire,2016-12-09,44179.35
+CUST-0904,Alfie Hall,Retail,Scotland,2019-04-12,2422.7
+CUST-0905,Thomas Phillips,Retail,North East,2019-09-03,23291.03
+CUST-0906,Joshua Hughes,Premier,Scotland,2015-02-16,54372.1
+CUST-0907,Evie Evans,Retail,London,2018-07-31,13728.28
+CUST-0908,Daniel Carter,Retail,East Midlands,2016-09-19,1737.74
+CUST-0909,Hannah Shaw,Premier,Scotland,2020-08-29,16305.81
+CUST-0910,Matilda Morris,Premier,South West,2016-06-25,33531.77
+CUST-0911,Martha Evans,Retail,West Midlands,2015-12-15,10263.91
+CUST-0912,Matilda White,Premier,Yorkshire,2021-04-09,23867.6
+CUST-0913,Hannah Martin,Premier,Northern Ireland,2020-11-17,27237.21
+CUST-0914,William Harrison,Premier,North West,2022-09-05,74689.67
+CUST-0915,Leo Wood,Premier,North East,2019-02-05,34381.55
+CUST-0916,Jessica Patel,Premier,London,2023-08-19,31337.32
+CUST-0917,Daisy Gray,Premier,Yorkshire,2015-07-03,74694.92
+CUST-0918,Dylan Martin,Premier,South West,2023-07-01,60994.07
+CUST-0919,James Wood,Premier,East Midlands,2021-12-18,74871.08
+CUST-0920,Grace Jones,Retail,South East,2018-06-03,11526.51
+CUST-0921,Harry Phillips,Retail,East Anglia,2017-05-17,5493.13
+CUST-0922,Ava Butler,Retail,Northern Ireland,2016-08-01,17529.24
+CUST-0923,Harry Allen,Premier,Wales,2020-11-27,13043.74
+CUST-0924,Benjamin Wilson,Retail,Northern Ireland,2021-12-06,7146.4
+CUST-0925,Elizabeth Jones,Retail,Wales,2018-01-16,16743.05
+CUST-0926,Freya Robinson,Retail,Wales,2019-05-03,6163.63
+CUST-0927,Evie Griffiths,Business,South East,2018-07-16,75276.01
+CUST-0928,Leo King,Retail,Yorkshire,2021-04-15,23195.57
+CUST-0929,Harry Davies,Retail,East Anglia,2018-06-02,8672.46
+CUST-0930,Hannah Green,Retail,Wales,2018-12-12,9206.76
+CUST-0931,Poppy Edwards,Business,East Anglia,2018-02-03,122724.46
+CUST-0932,Isla Cook,Private Banking,London,2021-03-23,477102.39
+CUST-0933,Lucas Wright,Retail,North East,2022-05-14,3862.89
+CUST-0934,Evie Price,Business,Scotland,2024-10-14,95701.07
+CUST-0935,Dylan Bell,Retail,South West,2019-10-13,24278.16
+CUST-0936,Charlotte Shaw,Retail,East Midlands,2022-04-26,3895.12
+CUST-0937,Sebastian Watson,Retail,Northern Ireland,2020-11-15,22784.29
+CUST-0938,Matilda Jackson,Premier,Scotland,2016-10-09,32224.73
+CUST-0939,Joshua King,Retail,South West,2023-02-26,1222.34
+CUST-0940,Lily Stevens,Business,West Midlands,2019-12-20,113113.41
+CUST-0941,Sophia Wright,Premier,South East,2016-06-22,22932.25
+CUST-0942,Emily Hughes,Premier,East Midlands,2022-09-16,11825.91
+CUST-0943,James Khan,Retail,Scotland,2020-04-04,17944.47
+CUST-0944,Isabella King,Private Banking,Yorkshire,2020-04-24,111880.73
+CUST-0945,Ethan Morgan,Retail,London,2018-01-10,23779.85
+CUST-0946,Lucas Martin,Premier,South East,2016-12-26,74897.22
+CUST-0947,Rosie Ali,Premier,Yorkshire,2024-12-14,27274.87
+CUST-0948,Florence Davies,Premier,North East,2023-01-28,31902.82
+CUST-0949,Jacob Price,Retail,Yorkshire,2024-04-10,22005.29
+CUST-0950,Amelia Price,Retail,Northern Ireland,2015-06-10,14163.67
+CUST-0951,Charlie Lee,Retail,North East,2024-12-01,7961.58
+CUST-0952,Grace O'Brien,Retail,West Midlands,2021-11-16,23016.3
+CUST-0953,Samuel O'Brien,Private Banking,Yorkshire,2016-01-06,375191.06
+CUST-0954,Archie King,Premier,Northern Ireland,2021-02-16,19471.47
+CUST-0955,Lucy Carter,Retail,South West,2020-02-02,14962.73
+CUST-0956,Sebastian Murphy,Retail,North West,2022-10-04,16390.12
+CUST-0957,Freddie Thompson,Retail,Northern Ireland,2020-01-15,16034.77
+CUST-0958,James Parker,Premier,Northern Ireland,2023-11-15,78263.4
+CUST-0959,Freddie Allen,Premier,London,2023-08-13,21961.95
+CUST-0960,Charlotte Wright,Retail,South West,2017-01-02,19344.34
+CUST-0961,Charlie Bell,Retail,Northern Ireland,2023-08-15,24043.67
+CUST-0962,Grace King,Retail,South West,2017-04-10,586.56
+CUST-0963,Isla Jones,Retail,Yorkshire,2021-02-04,20282.64
+CUST-0964,Imogen Edwards,Retail,Wales,2020-05-02,11616.59
+CUST-0965,Rosie Johnson,Premier,London,2017-09-29,71751.75
+CUST-0966,Sophia Clarke,Retail,South West,2015-08-14,16505.28
+CUST-0967,Jacob Jackson,Private Banking,Wales,2021-06-25,427106.5
+CUST-0968,Poppy Phillips,Business,London,2016-03-22,65458.75
+CUST-0969,Joseph Green,Premier,Scotland,2022-05-31,58405.95
+CUST-0970,Joseph Murphy,Premier,North West,2015-05-27,16518.84
+CUST-0971,Poppy Carter,Retail,North East,2024-03-13,2157.83
+CUST-0972,Phoebe Butler,Retail,Yorkshire,2016-07-05,3489.57
+CUST-0973,Sophia Phillips,Retail,East Anglia,2017-05-09,17547.82
+CUST-0974,Thomas Robinson,Premier,Wales,2020-12-06,79103.25
+CUST-0975,Sarah Young,Retail,North West,2017-11-29,13372.09
+CUST-0976,Alice White,Premier,Yorkshire,2020-10-29,61042.93
+CUST-0977,Imogen Singh,Private Banking,Scotland,2017-08-11,368864.18
+CUST-0978,Ethan Smith,Retail,Yorkshire,2022-01-05,20019.95
+CUST-0979,Adam Bell,Retail,North West,2018-12-03,14230.18
+CUST-0980,Ryan Jones,Premier,Northern Ireland,2018-02-27,27809.23
+CUST-0981,Oscar Ward,Retail,East Anglia,2018-08-19,19292.3
+CUST-0982,Archie Phillips,Retail,Northern Ireland,2021-05-19,15591.84
+CUST-0983,Jack Cooper,Retail,North West,2022-07-17,12238.15
+CUST-0984,Martha Brown,Premier,Yorkshire,2016-09-28,53904.03
+CUST-0985,Charlotte O'Brien,Premier,North East,2023-04-30,13921.56
+CUST-0986,Poppy Turner,Premier,London,2017-05-03,50417.83
+CUST-0987,Charlotte Adams,Retail,South West,2018-02-22,21098.11
+CUST-0988,Sophie Allen,Premier,South West,2021-05-27,52398.24
+CUST-0989,Arthur Wood,Private Banking,West Midlands,2022-11-28,436018.76
+CUST-0990,Jacob Harrison,Retail,Yorkshire,2024-11-01,6322.24
+CUST-0991,Millie Hall,Retail,West Midlands,2016-12-17,3249.67
+CUST-0992,Jacob Martin,Business,Yorkshire,2020-09-03,8615.54
+CUST-0993,Sarah Bennett,Retail,North West,2020-06-03,18444.81
+CUST-0994,Ella Carter,Retail,South East,2024-03-21,24565.7
+CUST-0995,Edward Clarke,Premier,Yorkshire,2019-05-07,59957.42
+CUST-0996,Archie Smith,Retail,London,2022-09-15,21279.04
+CUST-0997,Leo Phillips,Retail,London,2016-02-27,13254.15
+CUST-0998,Ella Williams,Premier,West Midlands,2022-03-01,72449.49
+CUST-0999,Jessica Martin,Retail,West Midlands,2020-12-20,8319.17
+CUST-1000,Rosie Thompson,Retail,South West,2018-01-25,3304.28

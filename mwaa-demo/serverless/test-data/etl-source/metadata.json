@@ -1,0 +1,7 @@
+{
+  "source": "upstream-data-lake",
+  "format": "csv",
+  "schema_version": "1.0",
+  "generated_at": "2024-12-01T00:00:00Z",
+  "row_count": 5
+}

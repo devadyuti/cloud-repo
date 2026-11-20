@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: fct_daily_region_revenue
+    description: Daily transaction totals per region and category.
+    columns:
+      - name: transaction_date
+        data_tests: [not_null]
+      - name: region
+        data_tests: [not_null]
+      - name: transaction_count
+        data_tests: [not_null]
+
+  - name: dim_customers
+    description: Customer dimension with lifetime activity metrics.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: net_balance
+        data_tests: [not_null]

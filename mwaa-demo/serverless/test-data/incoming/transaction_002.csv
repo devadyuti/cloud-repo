@@ -1,0 +1,4 @@
+customer_id,transaction_date,amount,currency,category
+C004,2024-12-02,3200.00,USD,bond_redemption
+C001,2024-12-02,8900.00,USD,equity_sale
+C005,2024-12-02,15000.00,CHF,fx_conversion

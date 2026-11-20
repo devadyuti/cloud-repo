@@ -1,0 +1,17 @@
+[
+  {
+    "name": "process_refund",
+    "description": "Process a customer refund request for a given dollar amount",
+    "inputSchema": {
+      "type": "object",
+      "description": "Input for processing a refund",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "The refund amount in dollars"
+        }
+      },
+      "required": ["amount"]
+    }
+  }
+]

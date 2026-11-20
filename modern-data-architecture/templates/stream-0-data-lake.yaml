@@ -1,0 +1,782 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Data Lake Foundation (Streams 1-2).
+  Self-contained CloudFormation for the S3 -> Glue -> Athena staging pipeline
+  governed by Lake Formation. Designed to deploy standalone in a personal
+  (Isengard) account in eu-west-1. Existing resources (e.g. Redshift) are
+  referenced by parameter and never recreated. Later stream stacks import the
+  exported outputs below.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: mda
+    Description: Short prefix used to name/derive resources.
+    AllowedPattern: "[a-z0-9-]+"
+
+  RawBucketName:
+    Type: String
+    Default: ""
+    Description: >
+      Optional explicit name for the raw bucket. Leave blank to auto-generate
+      as <ProjectName>-raw-<accountId>-<region>.
+
+  StageBucketName:
+    Type: String
+    Default: ""
+    Description: Optional explicit name for the stage/curated bucket. Blank = auto-generated.
+
+  ScriptsBucketName:
+    Type: String
+    Default: ""
+    Description: Optional explicit name for the Glue scripts bucket. Blank = auto-generated.
+
+  RawDatabaseName:
+    Type: String
+    Default: raw
+    Description: Glue Data Catalog database for raw (landing) tables.
+
+  StageDatabaseName:
+    Type: String
+    Default: stage
+    Description: Glue Data Catalog database for curated/stage tables.
+
+  AnalyticsDatabaseName:
+    Type: String
+    Default: analytics
+    Description: Glue Data Catalog database for analytics/consumption tables.
+
+  SalesScriptKey:
+    Type: String
+    Default: scripts/stage_sales_data.py
+    Description: S3 key (in the scripts bucket) for the sales staging job script.
+
+  CustomerScriptKey:
+    Type: String
+    Default: scripts/stage_customer_data.py
+    Description: S3 key (in the scripts bucket) for the customer staging job script.
+
+  GlueVersion:
+    Type: String
+    Default: "4.0"
+    AllowedValues: ["3.0", "4.0"]
+    Description: Glue runtime version for the ETL jobs.
+
+  ExistingRedshiftRoleArn:
+    Type: String
+    Default: ""
+    Description: >
+      OPTIONAL. ARN of an already-existing Redshift execution role to reuse in
+      later streams. Left blank now; do NOT create a new Redshift cluster here.
+
+  ParticipantAssumedRoleArn:
+    Type: String
+    Default: ""
+    Description: >
+      ARN of the IAM principal (user or role) completing the labs. It is added
+      as a Lake Formation data lake administrator so it can manage catalog
+      permissions and query the data lake. Leave blank to skip (e.g. if you
+      already registered yourself as an LF admin out of band). Mirrors the
+      workshop launch.yaml parameter of the same name.
+
+  DefaultPassword:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: >
+      Default password used by later streams (Aurora master user, Redshift,
+      etc.), stored in a Secrets Manager secret. Use at least 8 characters with
+      upper/lowercase, numbers, and a symbol. Leave blank to skip creating the
+      secret in Stream 0. Mirrors the workshop launch.yaml parameter.
+
+Conditions:
+  GenRawName: !Equals [!Ref RawBucketName, ""]
+  GenStageName: !Equals [!Ref StageBucketName, ""]
+  GenScriptsName: !Equals [!Ref ScriptsBucketName, ""]
+  HasParticipantRole: !Not [!Equals [!Ref ParticipantAssumedRoleArn, ""]]
+  HasDefaultPassword: !Not [!Equals [!Ref DefaultPassword, ""]]
+
+Resources:
+
+  # ---------------------------------------------------------------------------
+  # S3 buckets: raw (landing), stage (curated), scripts (Glue job code)
+  # ---------------------------------------------------------------------------
+  RawBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If
+        - GenRawName
+        - !Sub "${ProjectName}-raw-${AWS::AccountId}-${AWS::Region}"
+        - !Ref RawBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  StageBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If
+        - GenStageName
+        - !Sub "${ProjectName}-stage-${AWS::AccountId}-${AWS::Region}"
+        - !Ref StageBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  ScriptsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If
+        - GenScriptsName
+        - !Sub "${ProjectName}-scripts-${AWS::AccountId}-${AWS::Region}"
+        - !Ref ScriptsBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # Analytics (curated/consumption) bucket - Redshift UNLOAD target and the
+  # third lake zone the workshop's later streams use.
+  AnalyticsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${ProjectName}-analytics-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # Athena spill bucket - scratch space for Athena federated query (Lambda
+  # connectors, Stream 3B). Lifecycle-expired since it is transient scratch.
+  AthenaSpillBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${ProjectName}-athena-spill-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireSpillData
+            Status: Enabled
+            ExpirationInDays: 1
+
+  # ---------------------------------------------------------------------------
+  # Glue Data Catalog databases
+  # ---------------------------------------------------------------------------
+  RawDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Ref RawDatabaseName
+        Description: Raw landing zone tables (crawled from the raw bucket).
+
+  StageDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Ref StageDatabaseName
+        Description: Curated/stage tables produced by the Glue ETL jobs.
+
+  AnalyticsDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Ref AnalyticsDatabaseName
+        Description: Analytics/consumption tables (Redshift UNLOAD output, curated marts).
+
+  # ---------------------------------------------------------------------------
+  # IAM role shared by the Glue crawlers and ETL jobs
+  # ---------------------------------------------------------------------------
+  GlueExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-GlueExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      Policies:
+        - PolicyName: DataLakeS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: ReadWriteDataAndScripts
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${RawBucket}/*"
+                  - !Sub "arn:aws:s3:::${StageBucket}/*"
+                  - !Sub "arn:aws:s3:::${ScriptsBucket}/*"
+                  # Analytics bucket: the analytics crawler reads Redshift UNLOAD
+                  # output here to catalog analytics tables. Without this the
+                  # crawl "succeeds" but finds no readable objects (no table).
+                  - !Sub "arn:aws:s3:::${AnalyticsBucket}/*"
+                  # Athena federation connectors run under this role and must be
+                  # able to spill query results to the Athena spill bucket.
+                  # Without PutObject here, federated queries fail with an
+                  # s3:PutObject 403 on the spill location.
+                  - !Sub "arn:aws:s3:::${AthenaSpillBucket}/*"
+              - Sid: ListBuckets
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${RawBucket}"
+                  - !Sub "arn:aws:s3:::${StageBucket}"
+                  - !Sub "arn:aws:s3:::${ScriptsBucket}"
+                  - !Sub "arn:aws:s3:::${AnalyticsBucket}"
+                  - !Sub "arn:aws:s3:::${AthenaSpillBucket}"
+        - PolicyName: LakeFormationDataAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lakeformation:GetDataAccess
+                  - lakeformation:GrantPermissions
+                Resource: "*"
+
+  # ---------------------------------------------------------------------------
+  # Foundation service roles used by later streams (Firehose ingestion, Lambda).
+  # Published as SSM params so workshop labs can find them by name.
+  # ---------------------------------------------------------------------------
+  FirehoseExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-FirehoseExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: FirehoseDeliveryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:AbortMultipartUpload
+                  - s3:GetBucketLocation
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:ListBucketMultipartUploads
+                  - s3:PutObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${RawBucket}"
+                  - !Sub "arn:aws:s3:::${RawBucket}/*"
+              - Effect: Allow
+                Action:
+                  - kinesis:DescribeStream
+                  - kinesis:GetShardIterator
+                  - kinesis:GetRecords
+                  - kinesis:ListShards
+                Resource: !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/*"
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/*"
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-LambdaExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: LambdaDataLakeAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${RawBucket}"
+                  - !Sub "arn:aws:s3:::${RawBucket}/*"
+                  - !Sub "arn:aws:s3:::${StageBucket}"
+                  - !Sub "arn:aws:s3:::${StageBucket}/*"
+                  - !Sub "arn:aws:s3:::${AnalyticsBucket}"
+                  - !Sub "arn:aws:s3:::${AnalyticsBucket}/*"
+
+  # ---------------------------------------------------------------------------
+  # Default password secret (used by later streams: Aurora, Redshift, etc.)
+  # Only created when a DefaultPassword is supplied.
+  # ---------------------------------------------------------------------------
+  DefaultPasswordSecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: HasDefaultPassword
+    Properties:
+      Name: !Sub "${ProjectName}-default-password"
+      Description: Default workshop password for later-stream resources (Aurora, Redshift, etc.).
+      SecretString: !Sub '{"password":"${DefaultPassword}"}'
+
+  # ---------------------------------------------------------------------------
+  # Lake Formation data lake administrators.
+  # WARNING: DataLakeSettings REPLACES the entire admin list. The Admins list
+  # below MUST include every principal that should remain an admin. The values
+  # here reflect the admins present in account 123456789012 at authoring time
+  # (SageMaker/DataZone service roles + the 'admin' role) plus the optional
+  # participant role. If you deploy in a different account, update this list to
+  # match your existing admins first (aws lakeformation get-data-lake-settings)
+  # or you will lock those principals out of Lake Formation administration.
+  # ---------------------------------------------------------------------------
+  DataLakeAdminSettings:
+    Type: AWS::LakeFormation::DataLakeSettings
+    Condition: HasParticipantRole
+    Properties:
+      Admins:
+        - DataLakePrincipalIdentifier: !Sub "arn:aws:iam::${AWS::AccountId}:role/admin"
+        - DataLakePrincipalIdentifier: !Ref ParticipantAssumedRoleArn
+        - DataLakePrincipalIdentifier: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/AmazonSageMakerAdminIAMExecutionRole"
+        - DataLakePrincipalIdentifier: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/AmazonSageMakerManageAccess-eu-west-1-dzd_ar06a1mxjdgmza"
+        - DataLakePrincipalIdentifier: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/AmazonSageMakerProvisioning-123456789012"
+        - DataLakePrincipalIdentifier: !Sub "arn:aws:iam::${AWS::AccountId}:role/datazone_usr_role_dm6gkpc58bbxg6_ba64doc84opfdi"
+
+  # ---------------------------------------------------------------------------
+  # Lake Formation: register the data locations and grant the Glue role access
+  # ---------------------------------------------------------------------------
+  RawLocationRegistration:
+    Type: AWS::LakeFormation::Resource
+    Properties:
+      ResourceArn: !Sub "arn:aws:s3:::${RawBucket}"
+      UseServiceLinkedRole: true
+
+  StageLocationRegistration:
+    Type: AWS::LakeFormation::Resource
+    Properties:
+      ResourceArn: !Sub "arn:aws:s3:::${StageBucket}"
+      UseServiceLinkedRole: true
+
+  AnalyticsLocationRegistration:
+    Type: AWS::LakeFormation::Resource
+    Properties:
+      ResourceArn: !Sub "arn:aws:s3:::${AnalyticsBucket}"
+      UseServiceLinkedRole: true
+
+  GlueRoleRawDbPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Database:
+          CatalogId: !Ref AWS::AccountId
+          Name: !Ref RawDatabaseName
+      Permissions: [ALTER, CREATE_TABLE, DESCRIBE, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: RawDatabase
+
+  GlueRoleStageDbPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Database:
+          CatalogId: !Ref AWS::AccountId
+          Name: !Ref StageDatabaseName
+      Permissions: [ALTER, CREATE_TABLE, DESCRIBE, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: StageDatabase
+
+  GlueRoleRawTablesPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Table:
+          CatalogId: !Ref AWS::AccountId
+          DatabaseName: !Ref RawDatabaseName
+          TableWildcard: {}
+      Permissions: [SELECT, ALTER, DESCRIBE, INSERT, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: RawDatabase
+
+  GlueRoleStageTablesPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Table:
+          CatalogId: !Ref AWS::AccountId
+          DatabaseName: !Ref StageDatabaseName
+          TableWildcard: {}
+      Permissions: [SELECT, ALTER, DESCRIBE, INSERT, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: StageDatabase
+
+  GlueRoleAnalyticsDbPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Database:
+          CatalogId: !Ref AWS::AccountId
+          Name: !Ref AnalyticsDatabaseName
+      Permissions: [ALTER, CREATE_TABLE, DESCRIBE, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: AnalyticsDatabase
+
+  GlueRoleAnalyticsTablesPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        Table:
+          CatalogId: !Ref AWS::AccountId
+          DatabaseName: !Ref AnalyticsDatabaseName
+          TableWildcard: {}
+      Permissions: [SELECT, ALTER, DESCRIBE, INSERT, DROP]
+      PermissionsWithGrantOption: []
+    DependsOn: AnalyticsDatabase
+
+  GlueRoleRawLocationAccess:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        DataLocation:
+          CatalogId: !Ref AWS::AccountId
+          ResourceArn: !Sub "arn:aws:s3:::${RawBucket}"
+      Permissions: [DATA_LOCATION_ACCESS]
+      PermissionsWithGrantOption: []
+    DependsOn: RawLocationRegistration
+
+  GlueRoleStageLocationAccess:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !GetAtt GlueExecutionRole.Arn
+      Resource:
+        DataLocation:
+          CatalogId: !Ref AWS::AccountId
+          ResourceArn: !Sub "arn:aws:s3:::${StageBucket}"
+      Permissions: [DATA_LOCATION_ACCESS]
+      PermissionsWithGrantOption: []
+    DependsOn: StageLocationRegistration
+
+  # ---------------------------------------------------------------------------
+  # Glue crawlers: raw (over raw bucket) and stage (over stage bucket)
+  # ---------------------------------------------------------------------------
+  # NOTE: Each source is crawled via its own explicit S3Target (not the bucket
+  # root). Crawling a root path that contains only a single subfolder is a
+  # documented Glue crawler ambiguity - the crawler treats that lone folder as
+  # a partition value of a generically-named table instead of creating a
+  # properly-named table. Scoping each target to its own prefix removes the
+  # ambiguity and produces one table per source folder.
+  #
+  # Each crawler sets a TablePrefix matching its layer, so the table name is the
+  # folder name WITH that prefix:
+  #   RawCrawler   (TablePrefix "raw_")   -> raw_sales, raw_customers,
+  #                                          raw_cards, raw_sales_history
+  #   StageCrawler (TablePrefix "stage_") -> stage_sales, stage_customers
+  # These prefixed names are the table_names the staging jobs read (the sales
+  # job reads raw_sales, the customer job reads raw_customers). A target
+  # pointing at a prefix with no objects yet is harmless - the crawler simply
+  # finds nothing there until data lands.
+  #
+  # NOTE: TablePrefix only applies when the crawler CREATES a table; it does not
+  # rename tables that already exist. If a crawler ever ran without the prefix,
+  # drop the old unprefixed tables and re-crawl (see
+  # scripts/recreate_crawler_tables.sh) so they are recreated with the prefix.
+  RawCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${ProjectName}-raw-crawler"
+      Role: !GetAtt GlueExecutionRole.Arn
+      DatabaseName: !Ref RawDatabaseName
+      TablePrefix: "raw_"
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${RawBucket}/sales/"
+          - Path: !Sub "s3://${RawBucket}/customers/"
+          - Path: !Sub "s3://${RawBucket}/cards/"
+          - Path: !Sub "s3://${RawBucket}/sales_history/"
+          # Stream 1 DMS CDC lands the Aurora reviews table here. DMS nests the
+          # output as <BucketFolder>/<schema>/<table>/, i.e. reviews/public/reviews/,
+          # so the target points at the table-level path to yield a clean
+          # raw_reviews table (rather than treating "public" as a partition).
+          - Path: !Sub "s3://${RawBucket}/reviews/public/reviews/"
+          # Stream 1 DynamoDB -> Kinesis -> Firehose lands the Product data here,
+          # Hive-partitioned as Product/year=/month=/day=/ by the Firehose
+          # dynamic partitioning. Yields a partitioned raw_product table.
+          - Path: !Sub "s3://${RawBucket}/Product/"
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+
+  StageCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${ProjectName}-stage-crawler"
+      Role: !GetAtt GlueExecutionRole.Arn
+      DatabaseName: !Ref StageDatabaseName
+      TablePrefix: "stage_"
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${StageBucket}/sales/"
+          - Path: !Sub "s3://${StageBucket}/customers/"
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+
+  # Analytics crawler - crawls the analytics bucket (Redshift UNLOAD output /
+  # curated marts, populated by later streams) into the analytics database.
+  AnalyticsCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${ProjectName}-analytics-crawler"
+      Role: !GetAtt GlueExecutionRole.Arn
+      DatabaseName: !Ref AnalyticsDatabaseName
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${AnalyticsBucket}/"
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+
+  # ---------------------------------------------------------------------------
+  # Glue ETL jobs: sales (partition by year/month/day) and customers (by country)
+  # Scripts must be uploaded to the scripts bucket before first run.
+  # ---------------------------------------------------------------------------
+  StageSalesJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: !Sub "${ProjectName}-stage-sales"
+      Role: !GetAtt GlueExecutionRole.Arn
+      GlueVersion: !Ref GlueVersion
+      NumberOfWorkers: 2
+      WorkerType: G.1X
+      Command:
+        Name: glueetl
+        PythonVersion: "3"
+        ScriptLocation: !Sub "s3://${ScriptsBucket}/${SalesScriptKey}"
+      DefaultArguments:
+        "--job-language": "python"
+        "--output_s3_bucket_name": !Ref StageBucket
+        "--enable-metrics": "true"
+        "--enable-continuous-cloudwatch-log": "true"
+
+  StageCustomerJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: !Sub "${ProjectName}-stage-customer"
+      Role: !GetAtt GlueExecutionRole.Arn
+      GlueVersion: !Ref GlueVersion
+      NumberOfWorkers: 2
+      WorkerType: G.1X
+      Command:
+        Name: glueetl
+        PythonVersion: "3"
+        ScriptLocation: !Sub "s3://${ScriptsBucket}/${CustomerScriptKey}"
+      DefaultArguments:
+        "--job-language": "python"
+        "--output_s3_bucket_name": !Ref StageBucket
+        "--enable-metrics": "true"
+        "--enable-continuous-cloudwatch-log": "true"
+
+  # ---------------------------------------------------------------------------
+  # SSM Parameters: the workshop's later labs/scripts look these values up by
+  # these exact plain names (matching launch.yaml). Names are intentionally NOT
+  # prefixed with ProjectName so the workshop instructions resolve them as-is.
+  # Only the Stream-0-owned values are published here; later-stream parameters
+  # (DMS/Redshift/Aurora role ARNs, Aurora endpoint, etc.) are created by their
+  # own stream stacks.
+  # ---------------------------------------------------------------------------
+  ParameterRawBucketName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: RawBucketName
+      Type: String
+      Value: !Ref RawBucket
+
+  ParameterStageBucketName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: StageBucketName
+      Type: String
+      Value: !Ref StageBucket
+
+  ParameterScriptsBucketName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: ScriptsBucketName
+      Type: String
+      Value: !Ref ScriptsBucket
+
+  ParameterGlueExecutionRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: GlueExecutionRoleArn
+      Type: String
+      Value: !GetAtt GlueExecutionRole.Arn
+
+  ParameterAnalyticsBucketName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AnalyticsBucketName
+      Type: String
+      Value: !Ref AnalyticsBucket
+
+  ParameterAnalyticsDatabaseName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AnalyticsDatabaseName
+      Type: String
+      Value: !Ref AnalyticsDatabaseName
+
+  ParameterAthenaSpillBucketName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AthenaSpillBucketName
+      Type: String
+      Value: !Ref AthenaSpillBucket
+
+  ParameterFirehoseExecutionRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: FirehoseExecutionRoleArn
+      Type: String
+      Value: !GetAtt FirehoseExecutionRole.Arn
+
+  ParameterLambdaExecutionRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: LambdaExecutionRoleArn
+      Type: String
+      Value: !GetAtt LambdaExecutionRole.Arn
+
+  # ---------------------------------------------------------------------------
+  # Athena: dedicated workgroup writing results to the stage bucket
+  # ---------------------------------------------------------------------------
+  AthenaWorkGroup:
+    Type: AWS::Athena::WorkGroup
+    Properties:
+      Name: !Sub "${ProjectName}-workgroup"
+      State: ENABLED
+      WorkGroupConfiguration:
+        EnforceWorkGroupConfiguration: true
+        PublishCloudWatchMetricsEnabled: true
+        ResultConfiguration:
+          OutputLocation: !Sub "s3://${StageBucket}/athena-results/"
+
+Outputs:
+  RawBucketName:
+    Value: !Ref RawBucket
+    Export:
+      Name: !Sub "${ProjectName}-RawBucketName"
+  StageBucketName:
+    Value: !Ref StageBucket
+    Export:
+      Name: !Sub "${ProjectName}-StageBucketName"
+  ScriptsBucketName:
+    Value: !Ref ScriptsBucket
+    Export:
+      Name: !Sub "${ProjectName}-ScriptsBucketName"
+  GlueExecutionRoleArn:
+    Value: !GetAtt GlueExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-GlueExecutionRoleArn"
+  RawDatabaseName:
+    Value: !Ref RawDatabaseName
+    Export:
+      Name: !Sub "${ProjectName}-RawDatabaseName"
+  StageDatabaseName:
+    Value: !Ref StageDatabaseName
+    Export:
+      Name: !Sub "${ProjectName}-StageDatabaseName"
+  AnalyticsDatabaseName:
+    Value: !Ref AnalyticsDatabaseName
+    Export:
+      Name: !Sub "${ProjectName}-AnalyticsDatabaseName"
+  AthenaWorkGroupName:
+    Value: !Ref AthenaWorkGroup
+    Export:
+      Name: !Sub "${ProjectName}-AthenaWorkGroup"
+  DefaultPasswordSecretArn:
+    Condition: HasDefaultPassword
+    Value: !Ref DefaultPasswordSecret
+    Export:
+      Name: !Sub "${ProjectName}-DefaultPasswordSecretArn"
+  AnalyticsBucketName:
+    Value: !Ref AnalyticsBucket
+    Export:
+      Name: !Sub "${ProjectName}-AnalyticsBucketName"
+  AthenaSpillBucketName:
+    Value: !Ref AthenaSpillBucket
+    Export:
+      Name: !Sub "${ProjectName}-AthenaSpillBucketName"
+  FirehoseExecutionRoleArn:
+    Value: !GetAtt FirehoseExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-FirehoseExecutionRoleArn"
+  LambdaExecutionRoleArn:
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-LambdaExecutionRoleArn"

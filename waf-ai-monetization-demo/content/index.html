@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AnyCompany Media — Premium Content</title>
+  <style>
+    :root { --navy: #0a1f44; --red: #d6001c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: #1a1a1a; background: #f4f5f7; }
+    header { background: var(--navy); color: #fff; padding: 22px 24px; border-bottom: 4px solid var(--red); }
+    header .brand { font-family: Arial, sans-serif; font-weight: 800; letter-spacing: 1px; font-size: 24px; }
+    header .tag { font-family: Arial, sans-serif; font-size: 13px; color: #9fb0d6; margin-top: 4px; }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 24px; }
+    h1 { color: var(--navy); font-size: 28px; }
+    .intro { color: #444; font-size: 17px; line-height: 1.6; }
+    .cards { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+    a.card { display: block; text-decoration: none; background: #fff; border: 1px solid #e2e5ea; border-left: 4px solid var(--red); border-radius: 6px; padding: 18px 20px; transition: box-shadow .15s ease, transform .15s ease; }
+    a.card:hover { box-shadow: 0 4px 14px rgba(10,31,68,.12); transform: translateY(-1px); }
+    a.card .zone { font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--red); font-weight: 700; }
+    a.card .title { color: var(--navy); font-size: 20px; margin: 6px 0 4px; }
+    a.card .price { font-family: Arial, sans-serif; font-size: 13px; color: #667; }
+    footer { text-align: center; font-family: Arial, sans-serif; font-size: 12px; color: #777; padding: 28px; border-top: 1px solid #ddd; margin-top: 32px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">ANYCOMPANY MEDIA</div>
+    <div class="tag">Premium Content · Protected by AWS WAF AI Traffic Monetization</div>
+  </header>
+  <main>
+    <h1>Today's premium articles</h1>
+    <p class="intro">Browsers read free. AI bots and agents receive an HTTP 402 Payment Required response with a machine-readable price manifest, priced per content zone.</p>
+    <div class="cards">
+      <a class="card" href="/automotive/index.html">
+        <div class="zone">Autocar · Automotive</div>
+        <div class="title">Solid-state batteries: the breakthrough that could reshape the EV market</div>
+        <div class="price">AI access: $0.005 USDC per request</div>
+      </a>
+      <a class="card" href="/medical/index.html">
+        <div class="zone">MIMS · Medical</div>
+        <div class="title">Updated guidance reshapes first-line prescribing in type 2 diabetes</div>
+        <div class="price">AI access: $0.010 USDC per request (premium)</div>
+      </a>
+      <a class="card" href="/marketing/index.html">
+        <div class="zone">Campaign · Marketing</div>
+        <div class="title">How AI agents are rewriting the media buying playbook</div>
+        <div class="price">AI access: $0.003 USDC per request</div>
+      </a>
+    </div>
+  </main>
+  <footer>© 2026 AnyCompany Media Group — Premium Content</footer>
+</body>
+</html>

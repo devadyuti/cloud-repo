@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "gandalf-mcp-server": {
+      "command": "/Users/your-user/.toolbox/bin/gandalf-mcp-server",
+      "args": [],
+      "env": {
+        "PORT": "8001",
+        "OFFICE_MCP_SESSION_TTL": "3600",
+        "OFFICE_MCP_MAX_OPEN": "8",
+        "OFFICE_MCP_MAX_EXPIRED_HISTORY": "100"
+      },
+      "autoApprove": [
+        "open_excel_workbook",
+        "list_excel_workbooks",
+        "get_excel_workbook_metadata",
+        "read_excel_data",
+        "run_excel_custom_script",
+        "close_excel_workbook",
+        "read_word_text",
+        "close_word_document",
+        "create_excel_worksheet",
+        "copy_excel_range"
+      ]
+    },
+    "onedrive": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/your-user/OneDrive - example"
+      ],
+      "autoApprove": [
+        "read_text_file"
+      ],
+      "disabledTools": [
+        "read_media_file",
+        "get_file_info",
+        "list_allowed_directories"
+      ]
+    }
+  },
+  "disabled": false
+}

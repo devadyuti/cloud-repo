@@ -1,0 +1,4 @@
+customer_id,transaction_date,amount,currency,category
+C001,2024-12-01,5000.00,USD,wire_transfer
+C002,2024-12-01,12500.00,EUR,securities_purchase
+C003,2024-12-01,750.00,GBP,dividend_payment

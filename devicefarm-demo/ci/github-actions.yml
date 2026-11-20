@@ -1,0 +1,47 @@
+# Copy to .github/workflows/devicefarm.yml in the app repo.
+# Uses GitHub OIDC to assume an IAM role; no long-lived keys.
+name: Device Farm tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  devicefarm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: devicefarm-demo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.DEVICEFARM_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Package tests
+        run: make package
+
+      - name: Run on Device Farm
+        run: ./scripts/run_demo.sh
+
+      - name: Fetch artifacts
+        if: always()
+        run: ./scripts/fetch_results.sh || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: devicefarm-results
+          path: devicefarm-demo/results/

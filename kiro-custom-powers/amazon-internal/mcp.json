@@ -1,0 +1,117 @@
+{
+  "mcpServers": {
+    "builder-mcp": {
+      "command": "builder-mcp",
+      "args": [
+        "--include-tools=ReadInternalWebsites,InternalCodeSearch,TicketingReadActions,InternalSearch,SkillsTool"
+      ]
+    },
+    "aws-sentral-mcp": {
+      "command": "/Users/your-user/.toolbox/bin/aws-sentral-mcp",
+      "args": [],
+      "autoApprove": [
+        "get_opportunity_details",
+        "search_opportunities",
+        "get_my_personal_details",
+        "search_accounts",
+        "create_task",
+        "list_account_tasks",
+        "search_contacts",
+        "fetch_contact_details",
+        "create_contact",
+        "get_account_spend_by_service",
+        "fetch_account_details",
+        "search_products",
+        "add_opportunity_line_item",
+        "get_opportunity_line_items",
+        "update_opportunity_line_item",
+        "get_account_spend_summary",
+        "search_users"
+      ],
+      "disabledTools": [
+        "add_opportunity_contact_role",
+        "add_pfr_customer_influence",
+        "create_standard_task",
+        "create_partner_business_plan_drafts",
+        "create_opportunity",
+        "create_contact",
+        "create_event",
+        "create_lead",
+        "create_account_summary",
+        "fetch_campaign_details",
+        "fetch_contact_details",
+        "fetch_customer_influence_details",
+        "fetch_event_details",
+        "fetch_lead_details",
+        "fetch_partner_business_plan_drafts",
+        "get_my_personal_details",
+        "get_opportunity_contact_roles",
+        "get_registry_assignments",
+        "list_pfr_customer_influences",
+        "list_territories",
+        "list_user_assigned_accounts",
+        "list_user_assigned_territories",
+        "remove_opportunity_contact_role",
+        "remove_opportunity_line_item",
+        "remove_opportunity_tag",
+        "search_contacts",
+        "search_events",
+        "search_leads",
+        "search_campaigns",
+        "request_permissions",
+        "sift_assistant_summary",
+        "sift_assistant_enrichInsight",
+        "sift_insights_fetchById",
+        "sift_insights_delete",
+        "sift_insights_searchByQuery",
+        "sift_insightTemplates_search",
+        "add_opportunity_line_item",
+        "add_opportunity_tag",
+        "update_standard_task",
+        "update_opportunity_line_item",
+        "update_opportunity_contact_role",
+        "update_opportunity"
+      ]
+    },
+    "aws-outlook-mcp": {
+      "command": "/Users/your-user/.toolbox/bin/aws-outlook-mcp",
+      "args": [],
+      "autoApprove": [
+        "email_search",
+        "email_contacts",
+        "calendar_availability",
+        "calendar_meeting",
+        "email_read",
+        "email_draft",
+        "email_inbox",
+        "calendar_search",
+        "email_send",
+        "email_reply",
+        "email_forward",
+        "email_folders",
+        "email_attachments",
+        "email_move",
+        "calendar_view",
+        "calendar_room_booking",
+        "calendar_shared_list"
+      ],
+      "disabledTools": [
+        "email_forward",
+        "email_send",
+        "email_reply",
+        "todo_tasks",
+        "calendar_shared_list",
+        "email_list_folders",
+        "calendar_room_booking"
+      ]
+    },
+    "slack-mcp": {
+      "command": "mcp-registry",
+      "args": [
+        "start-server",
+        "slack-mcp"
+      ]
+    }
+  },
+  "disabled": false
+}

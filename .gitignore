@@ -1,0 +1,30 @@
+node_modules/
+.nuxt/
+.output/
+dist/
+data-backup/
+legal-doc-search/CopyrightActAgent/
+.idea/
+.vscode/
+.DS_Store
+*.iml
+.env
+.env.local
+.serverless/
+build/
+.venv/
+cdk.out/
+cdk.out.deploy/
+cdk.out.deploy2/
+__pycache__/
+*.pyc
+.pytest_cache/
+.aws-sam/
+
+# Lambda build artifacts (vendored deps + zips) - rebuilt from source
+modern-data-architecture/lambda/*/build/
+modern-data-architecture/lambda/*/package.zip
+
+# AgentCore deploy outputs (generated)
+agent-core-mcp-demo/deploy/outputs/*.json
+agent-core-mcp-demo/mcp/

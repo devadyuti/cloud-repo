@@ -1,0 +1,9 @@
+customer_id,customer_name,segment,home_region,onboarded_date
+cust-101,Customer A,premium,eu-west-1,2024-03-14
+cust-102,Customer B,standard,us-east-1,2024-06-02
+cust-103,Customer C,standard,eu-west-1,2025-01-20
+cust-104,Customer D,standard,us-east-1,2025-04-11
+cust-105,Customer E,premium,ap-southeast-1,2023-11-30
+cust-106,Customer F,standard,eu-west-1,2025-09-05
+cust-107,Customer G,premium,eu-west-1,2022-07-18
+cust-108,Customer H,standard,eu-west-1,2026-02-27

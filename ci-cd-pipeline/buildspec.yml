@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  variables:
+    PROJECT_DIR: ci-cd-pipeline
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - pip install pytest
+      - pip install aws-sam-cli
+
+  pre_build:
+    commands:
+      - echo "Running unit tests..."
+      - cd ${CODEBUILD_SRC_DIR}/${PROJECT_DIR} && python -m pytest tests/ -v
+      - echo "Tests passed!"
+
+  build:
+    commands:
+      - echo "Building SAM application..."
+      - cd ${CODEBUILD_SRC_DIR}/${PROJECT_DIR} && sam build
+      - cd ${CODEBUILD_SRC_DIR}/${PROJECT_DIR} && sam package --output-template-file packaged.yaml --s3-bucket ${ARTIFACT_BUCKET}
+
+artifacts:
+  base-directory: ci-cd-pipeline
+  files:
+    - packaged.yaml
+  discard-paths: yes

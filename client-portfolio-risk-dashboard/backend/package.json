@@ -1,0 +1,17 @@
+{
+  "name": "client-portfolio-risk-dashboard-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "@aws-sdk/client-bedrock-runtime": "3.654.0",
+    "@aws-sdk/client-dynamodb": "3.654.0",
+    "@aws-sdk/lib-dynamodb": "3.654.0",
+    "serverless": "4.4.9"
+  },
+  "scripts": {
+    "deploy": "serverless deploy",
+    "seed": "TABLE_NAME=ClientPortfolios-dev node scripts/seed.js"
+  }
+}

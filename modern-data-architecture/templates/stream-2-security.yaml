@@ -1,0 +1,290 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Stream 2 (Security): persona IAM roles. These roles
+  are the basis for the Stream 2 security / Lake Formation exercises. Each
+  persona is an assumable role used to demonstrate fine-grained, multi-session
+  data access governance: you assume a persona and query the data lake, seeing
+  only the slices Lake Formation grants to that persona.
+
+  This template creates only the roles + their base IAM policies. The
+  differentiated Lake Formation grants per persona (row/column/table scoping,
+  data cell filters, LF-Tags) are applied as the Stream 2 security exercises,
+  not here.
+
+  NOTE: the deployed stack is named "mda-pre-setup" (created before this file
+  was renamed to stream-2-security.yaml). The stack name is retained to avoid
+  recreating the persona roles.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: mda
+    Description: Short prefix used to name the persona roles (e.g. mda-DataAnalyst).
+    AllowedPattern: "[a-z0-9-]+"
+
+  AssumingPrincipalArn:
+    Type: String
+    Default: "arn:aws:iam::123456789012:role/admin"
+    Description: >
+      IAM principal ARN allowed to assume the persona roles. Defaults to the
+      account admin role so you can switch personas (multi-session) for the demo.
+
+Resources:
+
+  # SalesManagerUS - sales manager persona, scoped (via later LF grants) to US
+  # sales data.
+  SalesManagerUSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-SalesManagerUS"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AssumingPrincipalArn
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+      Policies:
+        - PolicyName: LakeFormationQueryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lakeformation:StartQueryPlanning
+                  - lakeformation:GetQueryState
+                  - lakeformation:GetWorkUnits
+                  - lakeformation:GetWorkUnitResults
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:ListEngineVersions
+                  - athena:ListWorkGroups
+                  - athena:ListDataCatalogs
+                  - athena:ListDatabases
+                  - athena:GetDatabase
+                  - athena:ListTableMetadata
+                  - athena:GetTableMetadata
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:BatchGetQueryExecution
+                  - athena:GetQueryExecution
+                  - athena:ListQueryExecutions
+                  - athena:StartQueryExecution
+                  - athena:StopQueryExecution
+                  - athena:GetQueryResults
+                  - athena:GetQueryResultsStream
+                  - athena:CreateNamedQuery
+                  - athena:GetNamedQuery
+                  - athena:BatchGetNamedQuery
+                  - athena:ListNamedQueries
+                  - athena:DeleteNamedQuery
+                  - athena:CreatePreparedStatement
+                  - athena:GetPreparedStatement
+                  - athena:ListPreparedStatements
+                  - athena:UpdatePreparedStatement
+                  - athena:DeletePreparedStatement
+                Resource:
+                  - !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/*"
+
+  # SalesManagerUK - sales manager persona, scoped (via later LF grants) to UK
+  # sales data.
+  SalesManagerUKRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-SalesManagerUK"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AssumingPrincipalArn
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+      Policies:
+        - PolicyName: LakeFormationQueryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lakeformation:StartQueryPlanning
+                  - lakeformation:GetQueryState
+                  - lakeformation:GetWorkUnits
+                  - lakeformation:GetWorkUnitResults
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:ListEngineVersions
+                  - athena:ListWorkGroups
+                  - athena:ListDataCatalogs
+                  - athena:ListDatabases
+                  - athena:GetDatabase
+                  - athena:ListTableMetadata
+                  - athena:GetTableMetadata
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:BatchGetQueryExecution
+                  - athena:GetQueryExecution
+                  - athena:ListQueryExecutions
+                  - athena:StartQueryExecution
+                  - athena:StopQueryExecution
+                  - athena:GetQueryResults
+                  - athena:GetQueryResultsStream
+                  - athena:CreateNamedQuery
+                  - athena:GetNamedQuery
+                  - athena:BatchGetNamedQuery
+                  - athena:ListNamedQueries
+                  - athena:DeleteNamedQuery
+                  - athena:CreatePreparedStatement
+                  - athena:GetPreparedStatement
+                  - athena:ListPreparedStatements
+                  - athena:UpdatePreparedStatement
+                  - athena:DeletePreparedStatement
+                Resource:
+                  - !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/*"
+
+  # DataAnalyst - broad analyst persona (also has DataZone access in the
+  # workshop).
+  DataAnalystRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-DataAnalyst"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AssumingPrincipalArn
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+        - arn:aws:iam::aws:policy/AmazonDataZoneFullUserAccess
+      Policies:
+        - PolicyName: LakeFormationQueryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lakeformation:StartQueryPlanning
+                  - lakeformation:GetQueryState
+                  - lakeformation:GetWorkUnits
+                  - lakeformation:GetWorkUnitResults
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:ListEngineVersions
+                  - athena:ListWorkGroups
+                  - athena:ListDataCatalogs
+                  - athena:ListDatabases
+                  - athena:GetDatabase
+                  - athena:ListTableMetadata
+                  - athena:GetTableMetadata
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:BatchGetQueryExecution
+                  - athena:GetQueryExecution
+                  - athena:ListQueryExecutions
+                  - athena:StartQueryExecution
+                  - athena:StopQueryExecution
+                  - athena:GetQueryResults
+                  - athena:GetQueryResultsStream
+                  - athena:CreateNamedQuery
+                  - athena:GetNamedQuery
+                  - athena:BatchGetNamedQuery
+                  - athena:ListNamedQueries
+                  - athena:DeleteNamedQuery
+                  - athena:CreatePreparedStatement
+                  - athena:GetPreparedStatement
+                  - athena:ListPreparedStatements
+                  - athena:UpdatePreparedStatement
+                  - athena:DeletePreparedStatement
+                Resource:
+                  - !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/*"
+
+  # SalesAnalyst - sales-scoped analyst persona.
+  SalesAnalystRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-SalesAnalyst"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AssumingPrincipalArn
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+      Policies:
+        - PolicyName: LakeFormationQueryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lakeformation:StartQueryPlanning
+                  - lakeformation:GetQueryState
+                  - lakeformation:GetWorkUnits
+                  - lakeformation:GetWorkUnitResults
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:ListEngineVersions
+                  - athena:ListWorkGroups
+                  - athena:ListDataCatalogs
+                  - athena:ListDatabases
+                  - athena:GetDatabase
+                  - athena:ListTableMetadata
+                  - athena:GetTableMetadata
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - athena:BatchGetQueryExecution
+                  - athena:GetQueryExecution
+                  - athena:ListQueryExecutions
+                  - athena:StartQueryExecution
+                  - athena:StopQueryExecution
+                  - athena:GetQueryResults
+                  - athena:GetQueryResultsStream
+                  - athena:CreateNamedQuery
+                  - athena:GetNamedQuery
+                  - athena:BatchGetNamedQuery
+                  - athena:ListNamedQueries
+                  - athena:DeleteNamedQuery
+                  - athena:CreatePreparedStatement
+                  - athena:GetPreparedStatement
+                  - athena:ListPreparedStatements
+                  - athena:UpdatePreparedStatement
+                  - athena:DeletePreparedStatement
+                Resource:
+                  - !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/*"
+
+Outputs:
+  SalesManagerUSRoleArn:
+    Value: !GetAtt SalesManagerUSRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-SalesManagerUSRoleArn"
+  SalesManagerUKRoleArn:
+    Value: !GetAtt SalesManagerUKRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-SalesManagerUKRoleArn"
+  DataAnalystRoleArn:
+    Value: !GetAtt DataAnalystRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-DataAnalystRoleArn"
+  SalesAnalystRoleArn:
+    Value: !GetAtt SalesAnalystRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-SalesAnalystRoleArn"

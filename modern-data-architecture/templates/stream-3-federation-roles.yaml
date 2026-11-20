@@ -1,0 +1,206 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Stream 3 Athena Federated Query connector roles.
+  Creates the three IAM roles needed to set up federated data sources for
+  Amazon Aurora (PostgreSQL), Amazon DynamoDB, and Amazon Redshift using the
+  current console flow (AWS Glue connection + Lake Formation federated catalog).
+
+  Each role is set up for BOTH sides of the current flow:
+    - trusts lambda.amazonaws.com  (the connector Lambda executes as this role)
+    - trusts lakeformation.amazonaws.com (Lake Formation assumes it to vend
+      credentials to Athena when the connection is registered/queried)
+  and carries: VPC ENI access (for in-VPC connectors), the Athena spill-bucket
+  read/write, invoke access to the connector Lambda, Glue connection access,
+  Secrets Manager read (for JDBC creds), and the source-specific read actions.
+
+  Self-contained and account-agnostic: fill the parameters and deploy in any
+  account/Region. Requires CAPABILITY_NAMED_IAM.
+
+Parameters:
+  RolePrefix:
+    Type: String
+    Default: mda
+    Description: Prefix for the created role names (e.g. mda -> mda-AuroraFederationRole).
+    AllowedPattern: "[a-zA-Z0-9-]+"
+
+  SpillBucketName:
+    Type: String
+    Description: >
+      Name of the Athena federation spill S3 bucket (e.g.
+      <account>-<region>-athena-spill). Every connector spills query overflow
+      here; the role must be able to read/write it.
+
+  ConnectorLambdaPrefix:
+    Type: String
+    Default: "*"
+    Description: >
+      Name (or prefix, with trailing *) of the connector Lambda function(s) the
+      role may invoke. Leave as "*" to allow any function, or scope it to your
+      connector names (e.g. athena-federation-*).
+
+  SecretsArnPattern:
+    Type: String
+    Default: "*"
+    Description: >
+      ARN or pattern of the Secrets Manager secret(s) holding JDBC credentials
+      for Aurora/Redshift (e.g. arn:aws:secretsmanager:REGION:ACCT:secret:mda-*).
+      Leave "*" to allow all secrets.
+
+Resources:
+
+  # ===========================================================================
+  # Aurora (PostgreSQL) federation connector role
+  # ===========================================================================
+  AuroraFederationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${RolePrefix}-AuroraFederationRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - lakeformation.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        # In-VPC connector Lambda needs ENI + CloudWatch Logs.
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Policies:
+        - PolicyName: FederationConnectorAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SpillBucket
+                Effect: Allow
+                Action: [s3:ListBucket, s3:GetObject, s3:PutObject, s3:GetBucketLocation]
+                Resource:
+                  - !Sub "arn:aws:s3:::${SpillBucketName}"
+                  - !Sub "arn:aws:s3:::${SpillBucketName}/*"
+              - Sid: InvokeConnector
+                Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ConnectorLambdaPrefix}"
+              - Sid: GlueConnectionAndCatalog
+                Effect: Allow
+                Action: [glue:GetConnection, glue:GetConnections, glue:GetDatabase, glue:GetDatabases, glue:GetTable, glue:GetTables]
+                Resource: "*"
+              - Sid: ReadJdbcSecret
+                Effect: Allow
+                Action: [secretsmanager:GetSecretValue, secretsmanager:DescribeSecret]
+                Resource: !Ref SecretsArnPattern
+              - Sid: AthenaFederationSDK
+                Effect: Allow
+                Action: [athena:GetQueryExecution]
+                Resource: "*"
+
+  # ===========================================================================
+  # DynamoDB federation connector role
+  # ===========================================================================
+  DynamoDBFederationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${RolePrefix}-DynamoDBFederationRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - lakeformation.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: FederationConnectorAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SpillBucket
+                Effect: Allow
+                Action: [s3:ListBucket, s3:GetObject, s3:PutObject, s3:GetBucketLocation]
+                Resource:
+                  - !Sub "arn:aws:s3:::${SpillBucketName}"
+                  - !Sub "arn:aws:s3:::${SpillBucketName}/*"
+              - Sid: InvokeConnector
+                Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ConnectorLambdaPrefix}"
+              - Sid: DynamoDBRead
+                Effect: Allow
+                Action:
+                  - dynamodb:DescribeTable
+                  - dynamodb:ListTables
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:PartiQLSelect
+                Resource: "*"
+              - Sid: GlueCatalog
+                Effect: Allow
+                Action: [glue:GetConnection, glue:GetDatabase, glue:GetDatabases, glue:GetTable, glue:GetTables]
+                Resource: "*"
+
+  # ===========================================================================
+  # Redshift federation connector role
+  # ===========================================================================
+  RedshiftFederationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${RolePrefix}-RedshiftFederationRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - lakeformation.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Policies:
+        - PolicyName: FederationConnectorAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SpillBucket
+                Effect: Allow
+                Action: [s3:ListBucket, s3:GetObject, s3:PutObject, s3:GetBucketLocation]
+                Resource:
+                  - !Sub "arn:aws:s3:::${SpillBucketName}"
+                  - !Sub "arn:aws:s3:::${SpillBucketName}/*"
+              - Sid: InvokeConnector
+                Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ConnectorLambdaPrefix}"
+              - Sid: GlueConnectionAndCatalog
+                Effect: Allow
+                Action: [glue:GetConnection, glue:GetConnections, glue:GetDatabase, glue:GetDatabases, glue:GetTable, glue:GetTables]
+                Resource: "*"
+              - Sid: ReadJdbcSecret
+                Effect: Allow
+                Action: [secretsmanager:GetSecretValue, secretsmanager:DescribeSecret]
+                Resource: !Ref SecretsArnPattern
+              - Sid: RedshiftDataAndGetCreds
+                Effect: Allow
+                Action:
+                  - redshift:GetClusterCredentials
+                  - redshift-data:ExecuteStatement
+                  - redshift-data:DescribeStatement
+                  - redshift-data:GetStatementResult
+                Resource: "*"
+
+Outputs:
+  AuroraFederationRoleArn:
+    Description: Role for the Aurora (PostgreSQL) Athena federation connector.
+    Value: !GetAtt AuroraFederationRole.Arn
+  DynamoDBFederationRoleArn:
+    Description: Role for the DynamoDB Athena federation connector.
+    Value: !GetAtt DynamoDBFederationRole.Arn
+  RedshiftFederationRoleArn:
+    Description: Role for the Redshift Athena federation connector.
+    Value: !GetAtt RedshiftFederationRole.Arn

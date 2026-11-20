@@ -1,0 +1,77 @@
+service: markdown-document-viewer
+
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  region: eu-west-1
+
+resources:
+  Resources:
+    DocumentBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-${sls:stage}-docs
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - 'https://docs.example.com'
+                - 'http://localhost:16401'
+              AllowedMethods:
+                - GET
+              AllowedHeaders:
+                - '*'
+
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: MarkdownDocViewerIdentityPool
+        AllowUnauthenticatedIdentities: true
+
+    UnauthenticatedRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
+                ForAnyValue:StringLike:
+                  'cognito-identity.amazonaws.com:amr': unauthenticated
+        Policies:
+          - PolicyName: S3ReadAccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 's3:GetObject'
+                    - 's3:ListBucket'
+                  Resource:
+                    - !Sub 'arn:aws:s3:::${DocumentBucket}/*'
+                    - !Sub 'arn:aws:s3:::${DocumentBucket}'
+
+    IdentityPoolRoleAttachment:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId: !Ref CognitoIdentityPool
+        Roles:
+          unauthenticated: !GetAtt UnauthenticatedRole.Arn
+
+  Outputs:
+    DocumentBucketName:
+      Description: Name of the S3 bucket for markdown documents
+      Value: !Ref DocumentBucket
+
+    Region:
+      Description: AWS region for the deployed resources
+      Value: !Ref AWS::Region
+
+    IdentityPoolId:
+      Description: Cognito Identity Pool ID for unauthenticated access
+      Value: !Ref CognitoIdentityPool

@@ -1,0 +1,7 @@
+build/
+results/
+screenshots/
+.demo_state.json
+.pytest_cache/
+__pycache__/
+.venv/

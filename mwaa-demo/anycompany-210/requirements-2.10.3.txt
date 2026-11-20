@@ -1,0 +1,21 @@
+# =============================================================================
+# MWAA requirements — TARGET: Apache Airflow 2.10.3 / Python 3.11
+# Environment: anycompany-mwaa-210  (eu-west-1)
+# Upload as: s3://anycompany-mwaa-210-dags-123456789012/requirements.txt
+# =============================================================================
+# This is the INITIAL requirements file, used when the environment is created
+# at Airflow 2.10.3. For the in-place upgrade to 2.11.2, swap in
+# requirements-2.11.2.txt and select its new S3 object version.
+#
+# Every pin below matches exactly what the 2.10.3 constraints file resolves to.
+# A pin that disagrees with the constraints file causes pip to fail, which on
+# MWAA surfaces as a failed environment create/update. See REQUIREMENTS-DIFF.md.
+# -----------------------------------------------------------------------------
+
+--constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.3/constraints-3.11.txt"
+
+# Amazon provider — S3, Glue, ECS, Redshift, SNS operators
+apache-airflow-providers-amazon==9.0.0
+
+# HTTP provider — external system integration DAG (HttpSensor, HTTP operators)
+apache-airflow-providers-http==4.13.2

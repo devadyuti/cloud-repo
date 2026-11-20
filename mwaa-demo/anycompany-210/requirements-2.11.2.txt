@@ -1,0 +1,27 @@
+# =============================================================================
+# MWAA requirements — TARGET: Apache Airflow 2.11.2 / Python 3.12
+# Environment: anycompany-mwaa-210  (eu-west-1)
+# Upload as: s3://anycompany-mwaa-210-dags-123456789012/requirements.txt
+# =============================================================================
+# This is the UPGRADE requirements file. Upload it (overwriting
+# requirements.txt), note the NEW S3 object version, then edit the environment
+# to set Airflow version 2.11.2 and that new requirements version TOGETHER in
+# a single update. Changing the Airflow version while leaving the old
+# requirements version selected is a common cause of upgrade failure.
+#
+# Note the Python jump: 2.10.3 runs Python 3.11, 2.11.2 runs Python 3.12.
+# That boundary — not the Airflow version itself — is what breaks most
+# upgrades, because packages must have 3.12-compatible wheels.
+#
+# Every pin below matches exactly what the 2.11.2 constraints file resolves to.
+# -----------------------------------------------------------------------------
+
+--constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.11.2/constraints-3.12.txt"
+
+# Amazon provider — S3, Glue, ECS, Redshift, SNS operators
+# 9.0.0 -> 9.22.0 (22 minor versions of provider drift)
+apache-airflow-providers-amazon==9.22.0
+
+# HTTP provider — external system integration DAG
+# 4.13.2 -> 6.0.0 (MAJOR bump, crosses 5.0.0 — see REQUIREMENTS-DIFF.md)
+apache-airflow-providers-http==6.0.0

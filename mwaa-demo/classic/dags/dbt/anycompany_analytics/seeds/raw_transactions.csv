@@ -1,0 +1,16 @@
+transaction_id,customer_id,amount,region,date,category
+txn-001,cust-101,1250.00,eu-west-1,2026-08-07,investment
+txn-002,cust-102,475.50,us-east-1,2026-08-07,withdrawal
+txn-003,cust-103,89.99,eu-west-1,2026-08-07,fee
+txn-004,cust-101,3200.00,ap-southeast-1,2026-08-07,investment
+txn-005,cust-104,150.00,us-east-1,2026-08-07,deposit
+txn-006,cust-105,2100.00,eu-west-1,2026-08-08,investment
+txn-007,cust-102,320.75,us-east-1,2026-08-08,deposit
+txn-008,cust-106,45.00,eu-west-1,2026-08-08,fee
+txn-009,cust-103,980.00,ap-southeast-1,2026-08-08,withdrawal
+txn-010,cust-107,5400.00,eu-west-1,2026-08-08,investment
+txn-011,cust-104,210.25,us-east-1,2026-08-09,deposit
+txn-012,cust-108,675.00,eu-west-1,2026-08-09,withdrawal
+txn-013,cust-105,12.50,ap-southeast-1,2026-08-09,fee
+txn-014,cust-101,1800.00,eu-west-1,2026-08-09,investment
+txn-015,cust-106,390.00,us-east-1,2026-08-09,deposit

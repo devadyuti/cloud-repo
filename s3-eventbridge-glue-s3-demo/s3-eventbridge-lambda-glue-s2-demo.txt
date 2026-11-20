@@ -1,0 +1,1188 @@
+{
+  "Resources": {
+    "SourceBucketDDD2130A": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "",
+            [
+              "demo-source-dev-",
+              {
+                "Ref": "AWS::AccountId"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true"
+          },
+          {
+            "Key": "aws-cdk:cr-owned:scripts:fd21058b",
+            "Value": "true"
+          }
+        ]
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SourceBucket/Resource"
+      }
+    },
+    "SourceBucketPolicy703DFBF9": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "SourceBucketDDD2130A"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn"
+                  ]
+                }
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "SourceBucketDDD2130A",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "SourceBucketDDD2130A",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SourceBucket/Policy/Resource"
+      }
+    },
+    "SourceBucketAutoDeleteObjectsCustomResourceC68FC040": {
+      "Type": "Custom::S3AutoDeleteObjects",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn"
+          ]
+        },
+        "BucketName": {
+          "Ref": "SourceBucketDDD2130A"
+        }
+      },
+      "DependsOn": [
+        "SourceBucketPolicy703DFBF9"
+      ],
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SourceBucket/AutoDeleteObjectsCustomResource/Default"
+      }
+    },
+    "SourceBucketNotifications0A6F2084": {
+      "Type": "Custom::S3BucketNotifications",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691",
+            "Arn"
+          ]
+        },
+        "BucketName": {
+          "Ref": "SourceBucketDDD2130A"
+        },
+        "NotificationConfiguration": {
+          "EventBridgeConfiguration": {}
+        },
+        "Managed": true,
+        "SkipDestinationValidation": false
+      },
+      "DependsOn": [
+        "SourceBucketPolicy703DFBF9"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SourceBucket/Notifications/Resource"
+      }
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+      }
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+          },
+          "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+        },
+        "Timeout": 900,
+        "MemorySize": 128,
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs20.x",
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "SourceBucketDDD2130A"
+              },
+              " S3 bucket."
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+        "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "aws:asset:property": "Code"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:PutBucketNotification",
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36",
+        "Roles": [
+          {
+            "Ref": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Description": "AWS CloudFormation handler for \"Custom::S3BucketNotifications\" resources (@aws-cdk/aws-s3)",
+        "Code": {
+          "ZipFile": "import boto3  # type: ignore\nimport json\nimport logging\nimport urllib.request\n\ns3 = boto3.client(\"s3\")\n\nEVENTBRIDGE_CONFIGURATION = 'EventBridgeConfiguration'\nCONFIGURATION_TYPES = [\"TopicConfigurations\", \"QueueConfigurations\", \"LambdaFunctionConfigurations\"]\n\ndef handler(event: dict, context):\n  response_status = \"SUCCESS\"\n  error_message = \"\"\n  try:\n    props = event[\"ResourceProperties\"]\n    notification_configuration = props[\"NotificationConfiguration\"]\n    managed = props.get('Managed', 'true').lower() == 'true'\n    skipDestinationValidation = props.get('SkipDestinationValidation', 'false').lower() == 'true'\n    stack_id = event['StackId']\n    old = event.get(\"OldResourceProperties\", {}).get(\"NotificationConfiguration\", {})\n    if managed:\n      config = handle_managed(event[\"RequestType\"], notification_configuration)\n    else:\n      config = handle_unmanaged(props[\"BucketName\"], stack_id, event[\"RequestType\"], notification_configuration, old)\n    s3.put_bucket_notification_configuration(Bucket=props[\"BucketName\"], NotificationConfiguration=config, SkipDestinationValidation=skipDestinationValidation)\n  except Exception as e:\n    logging.exception(\"Failed to put bucket notification configuration\")\n    response_status = \"FAILED\"\n    error_message = f\"Error: {str(e)}. \"\n  finally:\n    submit_response(event, context, response_status, error_message)\n\ndef handle_managed(request_type, notification_configuration):\n  if request_type == 'Delete':\n    return {}\n  return notification_configuration\n\ndef handle_unmanaged(bucket, stack_id, request_type, notification_configuration, old):\n  def get_id(n):\n    n['Id'] = ''\n    sorted_notifications = sort_filter_rules(n)\n    strToHash=json.dumps(sorted_notifications, sort_keys=True).replace('\"Name\": \"prefix\"', '\"Name\": \"Prefix\"').replace('\"Name\": \"suffix\"', '\"Name\": \"Suffix\"')\n    return f\"{stack_id}-{hash(strToHash)}\"\n  def with_id(n):\n    n['Id'] = get_id(n)\n    return n\n\n  external_notifications = {}\n  existing_notifications = s3.get_bucket_notification_configuration(Bucket=bucket)\n  for t in CONFIGURATION_TYPES:\n    if request_type == 'Update':\n        old_incoming_ids = [get_id(n) for n in old.get(t, [])]\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not get_id(n) in old_incoming_ids]      \n    elif request_type == 'Delete':\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not n['Id'].startswith(f\"{stack_id}-\")]\n    elif request_type == 'Create':\n        external_notifications[t] = [n for n in existing_notifications.get(t, [])]\n  if EVENTBRIDGE_CONFIGURATION in existing_notifications:\n    external_notifications[EVENTBRIDGE_CONFIGURATION] = existing_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  if request_type == 'Delete':\n    return external_notifications\n\n  notifications = {}\n  for t in CONFIGURATION_TYPES:\n    external = external_notifications.get(t, [])\n    incoming = [with_id(n) for n in notification_configuration.get(t, [])]\n    notifications[t] = external + incoming\n\n  if EVENTBRIDGE_CONFIGURATION in notification_configuration:\n    notifications[EVENTBRIDGE_CONFIGURATION] = notification_configuration[EVENTBRIDGE_CONFIGURATION]\n  elif EVENTBRIDGE_CONFIGURATION in external_notifications:\n    notifications[EVENTBRIDGE_CONFIGURATION] = external_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  return notifications\n\ndef submit_response(event: dict, context, response_status: str, error_message: str):\n  response_body = json.dumps(\n    {\n      \"Status\": response_status,\n      \"Reason\": f\"{error_message}See the details in CloudWatch Log Stream: {context.log_stream_name}\",\n      \"PhysicalResourceId\": event.get(\"PhysicalResourceId\") or event[\"LogicalResourceId\"],\n      \"StackId\": event[\"StackId\"],\n      \"RequestId\": event[\"RequestId\"],\n      \"LogicalResourceId\": event[\"LogicalResourceId\"],\n      \"NoEcho\": False,\n    }\n  ).encode(\"utf-8\")\n  headers = {\"content-type\": \"\", \"content-length\": str(len(response_body))}\n  try:\n    req = urllib.request.Request(url=event[\"ResponseURL\"], headers=headers, data=response_body, method=\"PUT\")\n    with urllib.request.urlopen(req) as response:\n      print(response.read().decode(\"utf-8\"))\n    print(\"Status code: \" + response.reason)\n  except Exception as e:\n      print(\"send(..) failed executing request.urlopen(..): \" + str(e))\n\ndef sort_filter_rules(json_obj):\n  if not isinstance(json_obj, dict):\n      return json_obj\n  for key, value in json_obj.items():\n      if isinstance(value, dict):\n          json_obj[key] = sort_filter_rules(value)\n      elif isinstance(value, list):\n          json_obj[key] = [sort_filter_rules(item) for item in value]\n  if \"Filter\" in json_obj and \"Key\" in json_obj[\"Filter\"] and \"FilterRules\" in json_obj[\"Filter\"][\"Key\"]:\n      filter_rules = json_obj[\"Filter\"][\"Key\"][\"FilterRules\"]\n      sorted_filter_rules = sorted(filter_rules, key=lambda x: x[\"Name\"])\n      json_obj[\"Filter\"][\"Key\"][\"FilterRules\"] = sorted_filter_rules\n  return json_obj"
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11",
+        "Timeout": 300
+      },
+      "DependsOn": [
+        "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36",
+        "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource"
+      }
+    },
+    "TargetBucket6BBF3429": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "",
+            [
+              "demo-target-dev-",
+              {
+                "Ref": "AWS::AccountId"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true"
+          }
+        ]
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/TargetBucket/Resource"
+      }
+    },
+    "TargetBucketPolicyDDA8DC0A": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "TargetBucket6BBF3429"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn"
+                  ]
+                }
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "TargetBucket6BBF3429",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "TargetBucket6BBF3429",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/TargetBucket/Policy/Resource"
+      }
+    },
+    "TargetBucketAutoDeleteObjectsCustomResourceB87F72D2": {
+      "Type": "Custom::S3AutoDeleteObjects",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn"
+          ]
+        },
+        "BucketName": {
+          "Ref": "TargetBucket6BBF3429"
+        }
+      },
+      "DependsOn": [
+        "TargetBucketPolicyDDA8DC0A"
+      ],
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/TargetBucket/AutoDeleteObjectsCustomResource/Default"
+      }
+    },
+    "GlueETLRoleD6A3A0E8": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "glue.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole"
+              ]
+            ]
+          }
+        ],
+        "RoleName": "glue-etl-role-dev"
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/GlueETLRole/Resource"
+      }
+    },
+    "GlueETLRoleDefaultPolicy5E2EA745": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "SourceBucketDDD2130A",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "SourceBucketDDD2130A",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "TargetBucket6BBF3429",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "TargetBucket6BBF3429",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "GlueETLRoleDefaultPolicy5E2EA745",
+        "Roles": [
+          {
+            "Ref": "GlueETLRoleD6A3A0E8"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/GlueETLRole/DefaultPolicy/Resource"
+      }
+    },
+    "GlueScriptDeploymentAwsCliLayer5E81A6C7": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "Content": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+          },
+          "S3Key": "ffa05cb70e8bf695fedb8812afe68064ee7f720b6bda66272a0d4692124cdd03.zip"
+        },
+        "Description": "/opt/awscli/aws"
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/GlueScriptDeployment/AwsCliLayer/Resource",
+        "aws:asset:path": "asset.ffa05cb70e8bf695fedb8812afe68064ee7f720b6bda66272a0d4692124cdd03.zip",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Content"
+      }
+    },
+    "GlueScriptDeploymentCustomResource8BFD593F": {
+      "Type": "Custom::CDKBucketDeployment",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "Arn"
+          ]
+        },
+        "SourceBucketNames": [
+          {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+          }
+        ],
+        "SourceObjectKeys": [
+          "b5c6a99d7f3e3c8a6d400e5479a4145cfeb4bd72e87cc8fa1d8edbf2d4e27146.zip"
+        ],
+        "DestinationBucketName": {
+          "Ref": "SourceBucketDDD2130A"
+        },
+        "DestinationBucketKeyPrefix": "scripts",
+        "Prune": true,
+        "OutputObjectKeys": true
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/GlueScriptDeployment/CustomResource/Default"
+      }
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource"
+      }
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "SourceBucketDDD2130A",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "SourceBucketDDD2130A",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+        "Roles": [
+          {
+            "Ref": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-eu-west-1"
+          },
+          "S3Key": "c6358465bf49dfae556bb430bf9c81fa578c221b82c308e3707901b1dd654762.zip"
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+          }
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "GlueScriptDeploymentAwsCliLayer5E81A6C7"
+          }
+        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11",
+        "Timeout": 900
+      },
+      "DependsOn": [
+        "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+        "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource",
+        "aws:asset:path": "asset.c6358465bf49dfae556bb430bf9c81fa578c221b82c308e3707901b1dd654762",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Code"
+      }
+    },
+    "CsvToParquetJob": {
+      "Type": "AWS::Glue::Job",
+      "Properties": {
+        "Command": {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": {
+            "Fn::Join": [
+              "",
+              [
+                "s3://",
+                {
+                  "Ref": "SourceBucketDDD2130A"
+                },
+                "/scripts/csv_to_parquet.py"
+              ]
+            ]
+          }
+        },
+        "DefaultArguments": {
+          "--source_bucket": {
+            "Ref": "SourceBucketDDD2130A"
+          },
+          "--source_key": "placeholder",
+          "--target_bucket": {
+            "Ref": "TargetBucket6BBF3429"
+          },
+          "--enable-metrics": "true",
+          "--enable-continuous-cloudwatch-log": "true"
+        },
+        "GlueVersion": "5.0",
+        "Name": "csv-to-parquet-job",
+        "NumberOfWorkers": 2,
+        "Role": {
+          "Fn::GetAtt": [
+            "GlueETLRoleD6A3A0E8",
+            "Arn"
+          ]
+        },
+        "Timeout": 5,
+        "WorkerType": "G.1X"
+      },
+      "DependsOn": [
+        "GlueScriptDeploymentAwsCliLayer5E81A6C7",
+        "GlueScriptDeploymentCustomResource8BFD593F"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/CsvToParquetJob"
+      }
+    },
+    "EventBridgeDLQA46398CD": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "MessageRetentionPeriod": 1209600,
+        "QueueName": "demo-eventbridge-dlq-dev"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/EventBridgeDLQ/Resource"
+      }
+    },
+    "EventBridgeDLQPolicy09902132": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "S3CsvUploadRule176A11CD",
+                      "Arn"
+                    ]
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EventBridgeDLQA46398CD",
+                  "Arn"
+                ]
+              },
+              "Sid": "AllowEventRuleS3EventBridgeGluePipelineStackS3CsvUploadRule496726ED"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "EventBridgeDLQA46398CD"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/EventBridgeDLQ/Policy/Resource"
+      }
+    },
+    "StartGlueJobFnServiceRoleA1BCA9DC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/StartGlueJobFn/ServiceRole/Resource"
+      }
+    },
+    "StartGlueJobFnServiceRoleDefaultPolicy45ABA8C6": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "glue:StartJobRun",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:glue:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":job/csv-to-parquet-job"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "StartGlueJobFnServiceRoleDefaultPolicy45ABA8C6",
+        "Roles": [
+          {
+            "Ref": "StartGlueJobFnServiceRoleA1BCA9DC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/StartGlueJobFn/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "StartGlueJobFn0596368B": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "\nimport json\nimport os\nimport boto3\n\nglue = boto3.client(\"glue\")\n\ndef handler(event, context):\n    \"\"\"Start Glue job with source bucket/key from S3 EventBridge event.\"\"\"\n    print(json.dumps(event))\n\n    detail = event.get(\"detail\", {})\n    source_bucket = detail.get(\"bucket\", {}).get(\"name\")\n    source_key = detail.get(\"object\", {}).get(\"key\")\n\n    if not source_bucket or not source_key:\n        raise ValueError(f\"Missing bucket or key in event detail: {detail}\")\n\n    # Only process files under input/ prefix\n    if not source_key.startswith(\"input/\"):\n        print(f\"Skipping key not in input/ prefix: {source_key}\")\n        return {\"statusCode\": 200, \"body\": \"Skipped - not in input/ prefix\"}\n\n    job_name = os.environ[\"GLUE_JOB_NAME\"]\n    target_bucket = os.environ[\"TARGET_BUCKET\"]\n\n    print(f\"Starting Glue job '{job_name}' for s3://{source_bucket}/{source_key}\")\n\n    response = glue.start_job_run(\n        JobName=job_name,\n        Arguments={\n            \"--source_bucket\": source_bucket,\n            \"--source_key\": source_key,\n            \"--target_bucket\": target_bucket,\n        },\n    )\n\n    run_id = response[\"JobRunId\"]\n    print(f\"Glue job run started: {run_id}\")\n\n    return {\"statusCode\": 200, \"body\": json.dumps({\"jobRunId\": run_id})}\n"
+        },
+        "Environment": {
+          "Variables": {
+            "GLUE_JOB_NAME": "csv-to-parquet-job",
+            "TARGET_BUCKET": {
+              "Ref": "TargetBucket6BBF3429"
+            }
+          }
+        },
+        "FunctionName": "start-glue-etl-dev",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "StartGlueJobFnServiceRoleA1BCA9DC",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.12",
+        "Timeout": 30
+      },
+      "DependsOn": [
+        "StartGlueJobFnServiceRoleDefaultPolicy45ABA8C6",
+        "StartGlueJobFnServiceRoleA1BCA9DC"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/StartGlueJobFn/Resource"
+      }
+    },
+    "S3CsvUploadRule176A11CD": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "bucket": {
+              "name": [
+                {
+                  "Ref": "SourceBucketDDD2130A"
+                }
+              ]
+            },
+            "object": {
+              "key": [
+                {
+                  "prefix": "input/"
+                },
+                {
+                  "suffix": ".csv"
+                }
+              ]
+            }
+          },
+          "detail-type": [
+            "Object Created"
+          ],
+          "source": [
+            "aws.s3"
+          ]
+        },
+        "Name": "s3-csv-upload-rule",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "StartGlueJobFn0596368B",
+                "Arn"
+              ]
+            },
+            "DeadLetterConfig": {
+              "Arn": {
+                "Fn::GetAtt": [
+                  "EventBridgeDLQA46398CD",
+                  "Arn"
+                ]
+              }
+            },
+            "Id": "Target0",
+            "RetryPolicy": {
+              "MaximumEventAgeInSeconds": 300,
+              "MaximumRetryAttempts": 2
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/S3CsvUploadRule/Resource"
+      }
+    },
+    "S3CsvUploadRuleAllowEventRuleS3EventBridgeGluePipelineStackStartGlueJobFnF6278B33AE2A4925": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "StartGlueJobFn0596368B",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "S3CsvUploadRule176A11CD",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/S3CsvUploadRule/AllowEventRuleS3EventBridgeGluePipelineStackStartGlueJobFnF6278B33"
+      }
+    },
+    "SchedulerGlueRoleD62758CE": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "scheduler.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "RoleName": "scheduler-glue-role-dev"
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SchedulerGlueRole/Resource"
+      }
+    },
+    "SchedulerGlueRoleDefaultPolicy38CED2F8": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "glue:StartJobRun",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:glue:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":job/csv-to-parquet-job"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "SchedulerGlueRoleDefaultPolicy38CED2F8",
+        "Roles": [
+          {
+            "Ref": "SchedulerGlueRoleD62758CE"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/SchedulerGlueRole/DefaultPolicy/Resource"
+      }
+    },
+    "DailyGlueEtlSchedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "FlexibleTimeWindow": {
+          "MaximumWindowInMinutes": 15,
+          "Mode": "FLEXIBLE"
+        },
+        "Name": "daily-glue-etl-schedule",
+        "ScheduleExpression": "cron(0 8 * * ? *)",
+        "ScheduleExpressionTimezone": "Europe/London",
+        "State": "ENABLED",
+        "Target": {
+          "Arn": "arn:aws:scheduler:::aws-sdk:glue:startJobRun",
+          "Input": {
+            "Fn::Join": [
+              "",
+              [
+                "{\"JobName\": \"csv-to-parquet-job\", \"Arguments\": {\"--source_bucket\": \"",
+                {
+                  "Ref": "SourceBucketDDD2130A"
+                },
+                "\", \"--source_key\": \"input/daily-feed.csv\", \"--target_bucket\": \"",
+                {
+                  "Ref": "TargetBucket6BBF3429"
+                },
+                "\"}}"
+              ]
+            ]
+          },
+          "RoleArn": {
+            "Fn::GetAtt": [
+              "SchedulerGlueRoleD62758CE",
+              "Arn"
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/DailyGlueEtlSchedule"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQTW+DMAz9Lb2nnmg17dwy7TBNGgNpV5QGQ7OGpIuTIoTy36cQRLtL3kf8LNs7yF6eIdvwgbaiuWyVPMFUOS4ujA9UT7SH6ejFBR3LW72wBIVRUox3e9FJHDlhYJL3MJVGYaya8R5KLDDa11ODV2XGHrWDFH9dDcaJ0BEcIgSmeH9qOEx5qz/4iPYbLUmjWSV1p9AZ/ea1cNFZSd7qR16g7SXFUGCd8gh5q9/NidEvwfTl0c/DJjK/95EfZGB4Q+0IptIv63mFgZE4Y+MV2ti2WkRguSdn+hLJeCtS+cr/fRXW3GSDNt6PzTtXjndSd2wNpBPUKq5f84GEknAYKFdyvkhs/und1bvAitGdjX7aQ7aDbLf5ISm31msne4Qy4R/+I+8OAQIAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "S3EventBridgeGluePipelineStack/CDKMetadata/Default"
+      }
+    }
+  },
+  "Outputs": {
+    "SourceBucketName": {
+      "Value": {
+        "Ref": "SourceBucketDDD2130A"
+      }
+    },
+    "TargetBucketName": {
+      "Value": {
+        "Ref": "TargetBucket6BBF3429"
+      }
+    },
+    "GlueJobName": {
+      "Value": "csv-to-parquet-job"
+    },
+    "LambdaFunctionName": {
+      "Value": {
+        "Ref": "StartGlueJobFn0596368B"
+      }
+    },
+    "EventBridgeRuleName": {
+      "Value": {
+        "Ref": "S3CsvUploadRule176A11CD"
+      }
+    },
+    "SchedulerName": {
+      "Value": "daily-glue-etl-schedule"
+    },
+    "DLQUrl": {
+      "Value": {
+        "Ref": "EventBridgeDLQA46398CD"
+      }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

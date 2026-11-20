@@ -1,0 +1,18 @@
+{
+  "name": "amplify-nuxt-cors",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reproduction app for Amplify + Nuxt SSG issues (direct URL 404s, SPA rewrite conflicts, CORS errors)",
+  "scripts": {
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "build": "nuxt build"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "nuxt": "^3.16.0"
+  }
+}

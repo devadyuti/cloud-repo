@@ -1,0 +1,34 @@
+# =============================================================================
+# MWAA requirements — TARGET: Apache Airflow 3.3.1 / Python 3.12
+# Environment: anycompany-mwaa-210-to-3x  (eu-west-1)
+# Upload alongside the others, then point RequirementsS3Path at this file.
+# =============================================================================
+# THIRD and final hop: 2.11.2 -> 3.3.1 (major version upgrade).
+#
+# Note what does NOT change on this hop: Python stays at 3.12. The interpreter
+# boundary was crossed on the previous hop (2.10.3 -> 2.11.2, py3.11 -> py3.12).
+# So unlike last time, dependency resolution is the EASY part here.
+#
+# The risk on this hop moves to DAG CODE. Airflow 3 relocates operators out of
+# airflow.* into provider packages and moves Variable/TaskGroup under the Task
+# SDK. See the AIRFLOW 3 MIGRATION comments in dags/.
+#
+# Every pin below matches exactly what the 3.3.1 constraints file resolves to.
+# -----------------------------------------------------------------------------
+
+--constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.3.1/constraints-3.12.txt"
+
+# NEW IN AIRFLOW 3 — required, and the reason this file differs most.
+# In Airflow 3 the core operators (PythonOperator, BashOperator, etc.) no longer
+# live in airflow.operators.*; they moved into this separate provider package.
+# Airflow 3 core depends on it so it is very likely already present on the MWAA
+# image, but declaring it explicitly makes the dependency visible and pins it.
+apache-airflow-providers-standard==1.17.0
+
+# Amazon provider — S3, Glue, ECS, Redshift, SNS operators
+# 9.22.0 -> 9.34.0
+apache-airflow-providers-amazon==9.34.0
+
+# HTTP provider — external system integration DAG
+# 6.0.0 -> 6.0.5 (patch only; the major jump happened on the previous hop)
+apache-airflow-providers-http==6.0.5

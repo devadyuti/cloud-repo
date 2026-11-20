@@ -1,0 +1,59 @@
+# MWAA Serverless Workflow: s3_etl_workflow
+# Realistic ETL pipeline: S3 source check → Glue transform → Redshift load → SNS notify
+# Runs every 10 minutes on a cron schedule.
+# Trigger: Cron schedule (every 10 minutes)
+
+s3_etl_workflow:
+  dag_id: s3_etl_workflow
+  schedule: None
+  default_args:
+    start_date: '2024-01-01'
+    retries: 1
+    retry_delay: 60
+  tasks:
+    check_source_data:
+      operator: airflow.providers.amazon.aws.operators.s3.S3ListOperator
+      bucket: 'any-company-mwaa-demo-dags-123456789012'
+      prefix: 'serverless/etl-source/'
+      retries: 0
+      dependencies: []
+
+    start_glue_job:
+      operator: airflow.providers.amazon.aws.operators.glue.GlueJobOperator
+      job_name: 'csv-to-parquet-job'
+      script_args:
+        '--source_bucket': 'any-company-mwaa-demo-dags-123456789012'
+        '--source_key': 'serverless/etl-source/data.csv'
+        '--target_bucket': 'any-company-mwaa-demo-dags-123456789012'
+      wait_for_completion: true
+      retries: 1
+      dependencies: [check_source_data]
+
+    load_to_redshift:
+      operator: airflow.providers.amazon.aws.operators.redshift_data.RedshiftDataOperator
+      database: 'dev'
+      workgroup_name: 'default-workgroup'
+      sql: |
+        DROP TABLE IF EXISTS public.etl_demo_data;
+        CREATE TABLE public.etl_demo_data (
+          id VARCHAR(64),
+          name VARCHAR(256),
+          amount VARCHAR(64),
+          region VARCHAR(64),
+          date VARCHAR(64)
+        );
+        COPY public.etl_demo_data
+        FROM 's3://any-company-mwaa-demo-dags-123456789012/serverless/processed/'
+        IAM_ROLE 'arn:aws:iam::123456789012:role/service-role/AmazonRedshift-CommandsAccessRole-20250901T162924'
+        FORMAT AS PARQUET;
+      wait_for_completion: true
+      retries: 1
+      dependencies: [start_glue_job]
+
+    send_notification:
+      operator: airflow.providers.amazon.aws.operators.sns.SnsPublishOperator
+      target_arn: 'arn:aws:sns:eu-west-1:123456789012:mwaa-etl-notifications'
+      message: 'ETL pipeline completed successfully at {{ ts }}. Data loaded from serverless/etl-source/ via Glue job csv-to-parquet-job into Redshift table public.etl_demo_data.'
+      subject: 'MWAA ETL Pipeline - Success'
+      dependencies: [load_to_redshift]
+  catchup: false

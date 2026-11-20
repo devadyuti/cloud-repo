@@ -1,0 +1,9 @@
+{
+  "app": "python3 app.py",
+  "context": {
+    "account_id": "",
+    "region": "eu-west-1",
+    "vpc_subnet_ids": [],
+    "vpc_security_group_ids": []
+  }
+}

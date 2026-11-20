@@ -1,0 +1,84 @@
+[
+  {
+    "resource": {
+      "attributes": {
+        "deployment.environment.name": "bedrock-agentcore:default",
+        "aws.local.service": "agentops_agentops.DEFAULT",
+        "service.name": "agentops_agentops.DEFAULT",
+        "cloud.region": "eu-west-1",
+        "aws.log.stream.names": "otel-rt-logs",
+        "telemetry.sdk.name": "opentelemetry",
+        "aws.service.type": "gen_ai_agent",
+        "telemetry.sdk.language": "python",
+        "cloud.provider": "aws",
+        "service.instance.id": "84b1df22-3b9f-4dd6-bc1e-6a1b3d1c3139",
+        "cloud.resource_id": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:runtime/agentops_agentops-133RNOGqJm/runtime-endpoint/DEFAULT:DEFAULT",
+        "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/agentops_agentops-133RNOGqJm-DEFAULT",
+        "telemetry.sdk.version": "1.44.0",
+        "cloud.platform": "aws_bedrock_agentcore",
+        "telemetry.auto.version": "0.20.0-aws"
+      }
+    },
+    "scope": {
+      "name": "strands.telemetry.tracer",
+      "version": ""
+    },
+    "traceId": "6abae4f664cc84574c195e68305d967b",
+    "spanId": "499956d6b65f0e4c",
+    "parentSpanId": "5807b6cd2e39614e",
+    "flags": 256,
+    "name": "chat",
+    "kind": "INTERNAL",
+    "startTimeUnixNano": 1790633206813954603,
+    "endTimeUnixNano": 1790633208583413796,
+    "durationNano": 1769459193,
+    "attributes": {
+      "aws.local.service": "agentops_agentops.DEFAULT",
+      "gen_ai.usage.prompt_tokens": 1988,
+      "gen_ai.usage.output_tokens": 51,
+      "gen_ai.server.request.duration": 1731,
+      "gen_ai.usage.total_tokens": 2039,
+      "gen_ai.usage.completion_tokens": 51,
+      "aws.genai.span_kind": "LLM",
+      "gen_ai.event.start_time": "2026-09-28T22:06:46.813970+00:00",
+      "gen_ai.server.time_to_first_token": 1529,
+      "aws.local.environment": "bedrock-agentcore:default",
+      "gen_ai.provider.name": "strands-agents",
+      "gen_ai.operation.name": "chat",
+      "gen_ai.event.end_time": "2026-09-28T22:06:48.583378+00:00",
+      "gen_ai.usage.input_tokens": 1988,
+      "aws.genai.token_count_total": 2039,
+      "gen_ai.request.model": "global.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "PlatformType": "AWS::BedrockAgentCore",
+      "session.id": "33b05303-6021-4772-8eb5-b6d85bc36a21",
+      "gen_ai.system": "strands-agents"
+    },
+    "events": [
+      {
+        "timeUnixNano": 1790633206814000968,
+        "name": "gen_ai.system.message",
+        "attributes": {
+          "content": "[{\"text\": \"You're a helpful assistant. You can do simple math calculation, and tell the weather.\"}]"
+        }
+      },
+      {
+        "timeUnixNano": 1790633206814015805,
+        "name": "gen_ai.user.message",
+        "attributes": {
+          "content": "[{\"text\": \"What is the weather in Athens?\"}]"
+        }
+      },
+      {
+        "timeUnixNano": 1790633208583369327,
+        "name": "gen_ai.choice",
+        "attributes": {
+          "message": "[{\"toolUse\": {\"toolUseId\": \"tooluse_zEq8MoU6XXAVuQhTOFXiJM\", \"name\": \"weather\", \"input\": {\"city\": \"Athens\"}}}]",
+          "finish_reason": "tool_use"
+        }
+      }
+    ],
+    "status": {
+      "code": "OK"
+    }
+  }
+]

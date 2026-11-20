@@ -1,0 +1,81 @@
+name: Deploy DAGs to MWAA
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "dags/**"
+      - "requirements.txt"
+      - "plugins/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pylint
+        run: pip install pylint
+
+      - name: Lint DAGs
+        run: pylint dags/ --disable=all --enable=E
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        # Same Airflow version + constraints as the MWAA environment (incl. astronomer-cosmos)
+        run: pip install pytest "apache-airflow==3.2.1" -r requirements.txt
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build dbt manifest
+        # dbt lives in its own venv, mirroring startup.sh on MWAA
+        run: |
+          python -m venv /tmp/dbt-venv
+          /tmp/dbt-venv/bin/pip install dbt-core==1.12.6 dbt-redshift==1.11.1
+          DBT_BIN=/tmp/dbt-venv/bin/dbt ./scripts/build_dbt_manifest.sh
+      - name: Sync DAGs to S3
+        run: >-
+          aws s3 sync dags/ s3://${{ secrets.MWAA_BUCKET }}/dags/ --delete
+          --exclude "*__pycache__/*"
+          --exclude "dbt/*/logs/*" --exclude "dbt/*/dbt_packages/*"
+          --exclude "dbt/*/target/*" --include "dbt/*/target/manifest.json"
+          --exclude "serverless-workflows/*" --exclude ".gitkeep"
+
+      - name: Upload requirements.txt to S3
+        run: aws s3 cp requirements.txt s3://${{ secrets.MWAA_BUCKET }}/requirements.txt

@@ -1,0 +1,315 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Modern Data Architecture - Stream 3 (Explore & Transform): Redshift execution
+  role for the analytics/consumption layer. Replicates the workshop's
+  RedshiftExecutionRole (mda- prefixed), adapted to this project's bucket and
+  secret names.
+
+  The role lets Redshift (the existing analytics-cluster) read the data lake via
+  Redshift Spectrum (Glue catalog + S3 read), UNLOAD transformed results to the
+  analytics bucket, act as a Lake Formation data admin, and read the Aurora
+  secret for Redshift federated queries against Aurora.
+
+  This template creates only the role. Attaching it to the cluster, creating the
+  Spectrum external schema, running transforms, and UNLOAD are done as the
+  Stream 3 exercises (Redshift Query Editor v2 / Data API), plus Lake Formation
+  grants to this role for the governed stage/analytics databases.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: mda
+    Description: Short prefix used to name resources.
+    AllowedPattern: "[a-z0-9-]+"
+
+  # --- InsertProduct Lambda (in-VPC, reaches Aurora) ------------------------
+  VpcSubnet1:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0204cb14175c717eb
+    Description: Private subnet (AZ1) for the InsertProduct Lambda ENIs.
+
+  VpcSubnet2:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0d65602c96c7689ae
+    Description: Private subnet (AZ2) for the InsertProduct Lambda ENIs.
+
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: sg-0dace3b7632f84f05
+    Description: Security group (in the Aurora VPC) for the InsertProduct Lambda.
+
+  InsertProductCodeKey:
+    Type: String
+    Default: lambda/insert_product.zip
+    Description: S3 key (in the Stream 0 scripts bucket) of the InsertProduct zip.
+
+  AuroraSecretName:
+    Type: String
+    Default: mda-aurora-secret
+    Description: Secrets Manager secret name holding Aurora credentials.
+
+Resources:
+
+  RedshiftExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-RedshiftExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - redshift.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSLakeFormationDataAdmin
+      Policies:
+        # UNLOAD / write access to the data-lake buckets (reads come from
+        # AmazonS3ReadOnlyAccess above). Adapted from the workshop's
+        # ${AccountId}-${Region}-datalake-* names to this project's mda-* names.
+        - PolicyName: CustomS3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: WriteDataLakeBuckets
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${ProjectName}-raw-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-raw-${AWS::AccountId}-${AWS::Region}/*"
+                  - !Sub "arn:aws:s3:::${ProjectName}-stage-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-stage-${AWS::AccountId}-${AWS::Region}/*"
+                  - !Sub "arn:aws:s3:::${ProjectName}-analytics-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-analytics-${AWS::AccountId}-${AWS::Region}/*"
+        # Read the Aurora secret for Redshift federated queries against Aurora.
+        - PolicyName: SecretsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AccessAuroraSecret
+                Effect: Allow
+                Action:
+                  - secretsmanager:GetResourcePolicy
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:ListSecretVersionIds
+                Resource:
+                  - !Sub "arn:aws:secretsmanager:*:${AWS::AccountId}:secret:${ProjectName}-aurora-secret-*"
+              - Sid: ListSecrets
+                Effect: Allow
+                Action:
+                  - secretsmanager:GetRandomPassword
+                  - secretsmanager:ListSecrets
+                Resource: "*"
+
+  # ---------------------------------------------------------------------------
+  # Athena Spark (PySpark) execution role. Athena assumes this role to run
+  # calculations in the Spark-enabled workgroup created for the Stream 3
+  # analytics exercises. Permissions follow the AWS default policy for
+  # notebook-enabled workgroups: S3 access to the analytics/stage buckets and
+  # the Athena spill bucket, the Athena session/calculation actions scoped to
+  # this project's Spark workgroup, and CloudWatch Logs + metrics for the
+  # session. The trust policy restricts assumption to the Athena service for
+  # this account and the project's Spark workgroup (confused-deputy guard).
+  # ---------------------------------------------------------------------------
+  AthenaSparkWorkgroupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-AthenaSparkWorkgroupRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: athena.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref "AWS::AccountId"
+              ArnLike:
+                aws:SourceArn: !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/${ProjectName}-spark"
+      Policies:
+        - PolicyName: SparkS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SparkBucketAccess
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${ProjectName}-analytics-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-analytics-${AWS::AccountId}-${AWS::Region}/*"
+                  - !Sub "arn:aws:s3:::${ProjectName}-stage-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-stage-${AWS::AccountId}-${AWS::Region}/*"
+                  - !Sub "arn:aws:s3:::${ProjectName}-athena-spill-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-athena-spill-${AWS::AccountId}-${AWS::Region}/*"
+                  # Athena Spark workgroup results/notebook output location.
+                  - !Sub "arn:aws:s3:::${ProjectName}-athenaoutput-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${ProjectName}-athenaoutput-${AWS::AccountId}-${AWS::Region}/*"
+        - PolicyName: SparkWorkgroupSession
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SparkSessionAndCalculation
+                Effect: Allow
+                Action:
+                  - athena:GetWorkGroup
+                  - athena:CreatePresignedNotebookUrl
+                  - athena:TerminateSession
+                  - athena:GetSession
+                  - athena:GetSessionStatus
+                  - athena:ListSessions
+                  - athena:StartCalculationExecution
+                  - athena:GetCalculationExecutionCode
+                  - athena:StopCalculationExecution
+                  - athena:ListCalculationExecutions
+                  - athena:GetCalculationExecution
+                  - athena:GetCalculationExecutionStatus
+                  - athena:ListExecutors
+                  - athena:ExportNotebook
+                  - athena:UpdateNotebook
+                Resource:
+                  - !Sub "arn:aws:athena:${AWS::Region}:${AWS::AccountId}:workgroup/${ProjectName}-spark"
+        - PolicyName: SparkLogsAndMetrics
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SparkCloudWatchLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:DescribeLogStreams
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws-athena:*"
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws-athena*:log-stream:*"
+              - Sid: SparkDescribeLogGroups
+                Effect: Allow
+                Action:
+                  - logs:DescribeLogGroups
+                Resource:
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*"
+              - Sid: SparkPutMetrics
+                Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    cloudwatch:namespace: AmazonAthenaForApacheSpark
+
+  # ---------------------------------------------------------------------------
+  # InsertProduct Lambda: inserts a single product into the Aurora "product"
+  # table (relational product table for the Athena federated-query part). Runs
+  # in-VPC to reach Aurora; reads creds from Secrets Manager and the endpoint
+  # from SSM (AuroraEndpoint). Accepts product_id/product_name/product_category
+  # plus optional price/quantity.
+  # ---------------------------------------------------------------------------
+  InsertProductRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-InsertProductRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Policies:
+        - PolicyName: ReadSecretAndEndpoint
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${AuroraSecretName}-*"
+              - Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AuroraEndpoint"
+
+  InsertProductFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${ProjectName}-InsertProduct"
+      Runtime: python3.12
+      Handler: app.lambda_handler
+      Timeout: 30
+      MemorySize: 256
+      Role: !GetAtt InsertProductRole.Arn
+      Code:
+        S3Bucket:
+          Fn::ImportValue: !Sub "${ProjectName}-ScriptsBucketName"
+        S3Key: !Ref InsertProductCodeKey
+      VpcConfig:
+        SubnetIds:
+          - !Ref VpcSubnet1
+          - !Ref VpcSubnet2
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+      Environment:
+        Variables:
+          AURORA_SECRET_ID: !Ref AuroraSecretName
+          AURORA_ENDPOINT_PARAM: AuroraEndpoint
+          AURORA_DB_NAME: mdacluster
+          AURORA_PORT: "5432"
+
+  # ---------------------------------------------------------------------------
+  # SSM Parameters the Stream 3 Redshift lab steps look up by these exact plain
+  # names (matching the workshop). StageBucketName / AnalyticsBucketName are
+  # already published by Stream 0; these three cover the Redshift role and the
+  # Aurora connection details (imported from Stream 1) for Redshift federated
+  # query.
+  # ---------------------------------------------------------------------------
+  ParameterRedshiftExecutionRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: RedshiftExecutionRoleArn
+      Type: String
+      Value: !GetAtt RedshiftExecutionRole.Arn
+
+  ParameterAuroraEndpoint:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AuroraEndpoint
+      Type: String
+      Value:
+        Fn::ImportValue: !Sub "${ProjectName}-AuroraEndpoint"
+
+  ParameterAuroraSecretARN:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AuroraSecretARN
+      Type: String
+      Value:
+        Fn::ImportValue: !Sub "${ProjectName}-AuroraSecretArn"
+
+  ParameterAthenaSparkWorkgroupRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: AthenaSparkWorkgroupRoleArn
+      Type: String
+      Value: !GetAtt AthenaSparkWorkgroupRole.Arn
+
+Outputs:
+  RedshiftExecutionRoleArn:
+    Value: !GetAtt RedshiftExecutionRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-RedshiftExecutionRoleArn"
+
+  AthenaSparkWorkgroupRoleArn:
+    Value: !GetAtt AthenaSparkWorkgroupRole.Arn
+    Export:
+      Name: !Sub "${ProjectName}-AthenaSparkWorkgroupRoleArn"

@@ -1,0 +1,15 @@
+Put your team's coding standards file here as:
+
+    .kiro/steering/development-standards.md
+
+The 6 agents in ../agents/ all reference
+"file://.kiro/steering/development-standards.md" as their single source of
+truth. That path is resolved relative to the folder you run kiro-cli from
+(your repo root), so the file must live at .kiro/steering/development-standards.md.
+
+You almost certainly already maintain this file — just make sure it sits at
+this path. Once your real development-standards.md is in this folder, delete
+this placeholder .txt.
+
+(This file is intentionally a .txt, not a .md, so kiro-cli does NOT load it as
+a steering document.)

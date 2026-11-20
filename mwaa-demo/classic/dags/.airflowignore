@@ -1,0 +1,2 @@
+# dbt project files are not DAGs — keep the DAG processor out of them.
+dbt/

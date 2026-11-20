@@ -1,0 +1,54 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "agentops": {
+            "runtimeId": "agentops_agentops-133RNOGqJm",
+            "runtimeArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:runtime/agentops_agentops-133RNOGqJm",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-agentops-defaul-ApplicationAgentAgentopsR-cLMvO09kuY1k"
+          }
+        },
+        "mcp": {
+          "gateways": {
+            "PolicyGateway": {
+              "gatewayId": "agentops-policygateway-sf1co0tlqb",
+              "gatewayArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:gateway/agentops-policygateway-sf1co0tlqb",
+              "gatewayUrl": "https://agentops-policygateway-sf1co0tlqb.gateway.bedrock-agentcore.eu-west-1.amazonaws.com/mcp",
+              "targets": {
+                "RefundTarget": {
+                  "targetId": "EM4PBE0908"
+                }
+              }
+            }
+          }
+        },
+        "evaluators": {
+          "ToolAndPolicyCheck": {
+            "evaluatorId": "agentops_ToolAndPolicyCheck-dZfaia4SjZ",
+            "evaluatorArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:evaluator/agentops_ToolAndPolicyCheck-dZfaia4SjZ"
+          },
+          "HelpfulnessJudge": {
+            "evaluatorId": "agentops_HelpfulnessJudge-RhI9KmGhMr",
+            "evaluatorArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:evaluator/agentops_HelpfulnessJudge-RhI9KmGhMr"
+          }
+        },
+        "policyEngines": {
+          "RefundPolicyEngine": {
+            "policyEngineId": "agentops_RefundPolicyEngine-0uqdoipa26",
+            "policyEngineArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:policy-engine/agentops_RefundPolicyEngine-0uqdoipa26"
+          }
+        },
+        "policies": {
+          "RefundPolicyEngine/RefundLimit": {
+            "policyId": "RefundLimit-vi9pusgqt3",
+            "policyArn": "arn:aws:bedrock-agentcore:eu-west-1:123456789012:policy-engine/agentops_RefundPolicyEngine-0uqdoipa26/policy/RefundLimit-vi9pusgqt3",
+            "engineName": "RefundPolicyEngine"
+          }
+        },
+        "stackName": "AgentCore-agentops-default",
+        "deployHash": "a4d18b27d83f7e6b"
+      }
+    }
+  }
+}

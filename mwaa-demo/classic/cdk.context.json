@@ -1,0 +1,58 @@
+{
+  "vpc-provider:account=123456789012:filter.tag:Name=Analytics Workshop VPC:region=eu-west-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-05b7b77b857f53ef1",
+    "vpcCidrBlock": "10.2.0.0/16",
+    "ownerAccountId": "123456789012",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0204cb14175c717eb",
+            "cidr": "10.2.20.0/24",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-0ef2b20ebc34b37a9"
+          },
+          {
+            "subnetId": "subnet-0d65602c96c7689ae",
+            "cidr": "10.2.21.0/24",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-0f53fb86965eddc85"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-03e1278606ff86793",
+            "cidr": "10.2.10.0/24",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-0afc656c8972bce6b"
+          },
+          {
+            "subnetId": "subnet-0d666b72b04713655",
+            "cidr": "10.2.0.0/26",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-0702a18eed395945e"
+          },
+          {
+            "subnetId": "subnet-0130f6b243494cefe",
+            "cidr": "10.2.11.0/24",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-0afc656c8972bce6b"
+          },
+          {
+            "subnetId": "subnet-09b2b139e384ceb84",
+            "cidr": "10.2.0.128/26",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-02233e6c733e0180d"
+          }
+        ]
+      }
+    ]
+  }
+}

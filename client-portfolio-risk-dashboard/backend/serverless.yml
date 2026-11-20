@@ -1,0 +1,80 @@
+service: portfolio-risk-dashboard
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: eu-west-1
+  stage: ${opt:stage, 'dev'}
+  httpApi:
+    cors: true
+  environment:
+    TABLE_NAME: ClientPortfolios-${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:PutItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:123456789012:table/${self:provider.environment.TABLE_NAME}
+        - Effect: Allow
+          Action:
+            - bedrock:InvokeModel
+          Resource:
+            - arn:aws:bedrock:*::foundation-model/anthropic.claude-sonnet-4-6
+            - arn:aws:bedrock:*:123456789012:inference-profile/eu.anthropic.claude-sonnet-4-6
+
+functions:
+  listClients:
+    handler: src/routes/clients.listClients
+    timeout: 10
+    events:
+      - httpApi:
+          path: /clients
+          method: get
+
+  getClient:
+    handler: src/routes/clients.getClient
+    timeout: 10
+    events:
+      - httpApi:
+          path: /clients/{id}
+          method: get
+
+  getPortfolio:
+    handler: src/routes/portfolio.getPortfolio
+    timeout: 10
+    events:
+      - httpApi:
+          path: /clients/{id}/portfolio
+          method: get
+
+  generateInsights:
+    handler: src/routes/insights.generateInsights
+    timeout: 30
+    events:
+      - httpApi:
+          path: /clients/{id}/insights
+          method: post
+
+resources:
+  Resources:
+    ClientPortfoliosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE

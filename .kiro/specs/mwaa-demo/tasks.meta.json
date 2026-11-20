@@ -1,0 +1,185 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Create project scaffold and CDK entry point": [
+      {
+        "executionId": "e894285d-94f7-4000-9224-1f9c19fc747d",
+        "chatSessionId": "sess_9545f9bd-5d9d-41a8-ad27-41fc0efdbfe3",
+        "timestamp": 1785261600580
+      },
+      {
+        "executionId": "e894285d-94f7-4000-9224-1f9c19fc747d",
+        "chatSessionId": "sess_9545f9bd-5d9d-41a8-ad27-41fc0efdbfe3",
+        "timestamp": 1785261664924
+      }
+    ],
+    "2. Build VPC stack (lookup existing VPC)": [
+      {
+        "executionId": "c4a725c6-401b-42c1-a1c3-b9d20bd59e12",
+        "chatSessionId": "sess_432367d8-073c-40b7-92bd-26bf373a0008",
+        "timestamp": 1785310572703
+      },
+      {
+        "executionId": "c4a725c6-401b-42c1-a1c3-b9d20bd59e12",
+        "chatSessionId": "sess_432367d8-073c-40b7-92bd-26bf373a0008",
+        "timestamp": 1785310690087
+      }
+    ],
+    "3. Build MWAA stack": [
+      {
+        "executionId": "1f592a5c-9290-44d1-86d2-47852bba2e4b",
+        "chatSessionId": "sess_e50c9284-3d12-4783-8be0-0f8615a2c9e1",
+        "timestamp": 1785310829767
+      },
+      {
+        "executionId": "1f592a5c-9290-44d1-86d2-47852bba2e4b",
+        "chatSessionId": "sess_e50c9284-3d12-4783-8be0-0f8615a2c9e1",
+        "timestamp": 1785310931030
+      }
+    ],
+    "4. Build ECS stack": [
+      {
+        "executionId": "33584932-fa49-4133-b8a6-1dabe5da9ede",
+        "chatSessionId": "sess_a4df210b-0a9d-446e-9a6a-4fc8b088e773",
+        "timestamp": 1785311071735
+      },
+      {
+        "executionId": "33584932-fa49-4133-b8a6-1dabe5da9ede",
+        "chatSessionId": "sess_a4df210b-0a9d-446e-9a6a-4fc8b088e773",
+        "timestamp": 1785311174340
+      }
+    ],
+    "5. Build Lambda stack": [
+      {
+        "executionId": "59873c1f-39d0-4fbe-a666-b8497966c0bf",
+        "chatSessionId": "sess_52f8cf15-feb6-49b2-b9e0-03cd7d229e24",
+        "timestamp": 1785311283028
+      },
+      {
+        "executionId": "59873c1f-39d0-4fbe-a666-b8497966c0bf",
+        "chatSessionId": "sess_52f8cf15-feb6-49b2-b9e0-03cd7d229e24",
+        "timestamp": 1785312153007
+      }
+    ],
+    "6. Build Monitoring stack": [
+      {
+        "executionId": "40439e17-10ea-4df9-bd28-f7af63f11e57",
+        "chatSessionId": "sess_ca09e184-b763-43bd-9756-22f6e719b70c",
+        "timestamp": 1785312602161
+      },
+      {
+        "executionId": "40439e17-10ea-4df9-bd28-f7af63f11e57",
+        "chatSessionId": "sess_ca09e184-b763-43bd-9756-22f6e719b70c",
+        "timestamp": 1785312779953
+      }
+    ],
+    "7. Write DAG files": [
+      {
+        "executionId": "e0021beb-4680-4b1d-8a4e-dda360b78c17",
+        "chatSessionId": "sess_131ac162-3341-42dc-b167-56e7b89e361e",
+        "timestamp": 1785312789594
+      },
+      {
+        "executionId": "e0021beb-4680-4b1d-8a4e-dda360b78c17",
+        "chatSessionId": "sess_131ac162-3341-42dc-b167-56e7b89e361e",
+        "timestamp": 1785312998713
+      }
+    ],
+    "8. Write Airflow requirements.txt": [
+      {
+        "executionId": "8ad55664-47ab-41c3-bbb7-4b6691874af8",
+        "chatSessionId": "sess_42ea60bd-065e-43d6-8036-839df134e7f7",
+        "timestamp": 1785313007330
+      },
+      {
+        "executionId": "8ad55664-47ab-41c3-bbb7-4b6691874af8",
+        "chatSessionId": "sess_42ea60bd-065e-43d6-8036-839df134e7f7",
+        "timestamp": 1785313087416
+      }
+    ],
+    "9. Write Docker image files": [
+      {
+        "executionId": "8b42a01d-77cc-4fdf-ac0e-fa60348053e0",
+        "chatSessionId": "sess_0987b088-c307-4157-8ef2-1a72403fe32a",
+        "timestamp": 1785313095917
+      },
+      {
+        "executionId": "8b42a01d-77cc-4fdf-ac0e-fa60348053e0",
+        "chatSessionId": "sess_0987b088-c307-4157-8ef2-1a72403fe32a",
+        "timestamp": 1785313194819
+      }
+    ],
+    "10. Write Lambda trigger function": [
+      {
+        "executionId": "8ef00363-76e6-48ce-b908-fb47e7e25949",
+        "chatSessionId": "sess_3633ba4f-33cd-403f-a05e-5598d714c13f",
+        "timestamp": 1785313203805
+      },
+      {
+        "executionId": "8ef00363-76e6-48ce-b908-fb47e7e25949",
+        "chatSessionId": "sess_3633ba4f-33cd-403f-a05e-5598d714c13f",
+        "timestamp": 1785313303442
+      }
+    ],
+    "11. Write DAG tests": [
+      {
+        "executionId": "4c1e3c1f-7449-45b2-a6f4-6891369983fb",
+        "chatSessionId": "sess_40ffb7fb-36c9-473d-bc58-e9e0d1618244",
+        "timestamp": 1785313312623
+      },
+      {
+        "executionId": "4c1e3c1f-7449-45b2-a6f4-6891369983fb",
+        "chatSessionId": "sess_40ffb7fb-36c9-473d-bc58-e9e0d1618244",
+        "timestamp": 1785313448388
+      }
+    ],
+    "12. Write CI/CD pipeline": [
+      {
+        "executionId": "ee667c5d-9738-483e-bdf3-7e282cb405ed",
+        "chatSessionId": "sess_6efafa5f-cbef-495a-b5af-4e7111d1d71d",
+        "timestamp": 1785313457921
+      },
+      {
+        "executionId": "ee667c5d-9738-483e-bdf3-7e282cb405ed",
+        "chatSessionId": "sess_6efafa5f-cbef-495a-b5af-4e7111d1d71d",
+        "timestamp": 1785313506674
+      }
+    ],
+    "13. Deploy to AWS and validate": [
+      {
+        "executionId": "6e17fe53-236f-4741-970e-795804fb4e99",
+        "chatSessionId": "sess_366d2857-a7d0-4897-9942-36461d8e13b3",
+        "timestamp": 1785321772760
+      },
+      {
+        "executionId": "0b7fc67f-27d8-482d-a172-1fa0e1070ded",
+        "chatSessionId": "sess_366d2857-a7d0-4897-9942-36461d8e13b3",
+        "timestamp": 1785337757501
+      }
+    ],
+    "12b. Create MWAA Serverless workflows": [
+      {
+        "executionId": "9a23c858-c2ce-4a89-9f47-791773b01fdc",
+        "chatSessionId": "sess_366d2857-a7d0-4897-9942-36461d8e13b3",
+        "timestamp": 1785335183939
+      },
+      {
+        "executionId": "0b7fc67f-27d8-482d-a172-1fa0e1070ded",
+        "chatSessionId": "sess_366d2857-a7d0-4897-9942-36461d8e13b3",
+        "timestamp": 1785337756700
+      }
+    ],
+    "14. Write README": [
+      {
+        "executionId": "edbd9ee1-1a1d-49af-b680-ebbd10d784af",
+        "chatSessionId": "sess_211e9524-ed2b-4343-9f7a-01b4a90bdd12",
+        "timestamp": 1785340335913
+      },
+      {
+        "executionId": "edbd9ee1-1a1d-49af-b680-ebbd10d784af",
+        "chatSessionId": "sess_211e9524-ed2b-4343-9f7a-01b4a90bdd12",
+        "timestamp": 1785340486701
+      }
+    ]
+  }
+}

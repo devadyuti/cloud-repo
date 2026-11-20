@@ -1,0 +1,21 @@
+# MWAA Serverless Workflow: s3_event_lambda_serverless
+# Automatically triggered when a file lands in the serverless/incoming/ prefix.
+# The Lambda function (mwaa-dag-trigger) invokes this workflow on S3 PutObject events.
+#
+# Trigger: S3 event (serverless/incoming/) → Lambda → MWAA API → this workflow
+
+s3_event_lambda_serverless:
+  dag_id: s3_event_lambda_serverless
+  schedule: None
+  default_args:
+    start_date: '2024-01-01'
+    retries: 0
+  tasks:
+    log_trigger_event:
+      operator: airflow.providers.amazon.aws.operators.s3.S3CreateObjectOperator
+      s3_bucket: 'any-company-mwaa-demo-dags-123456789012'
+      s3_key: 'serverless/output/s3_event_trigger_{{ ts_nodash }}.txt'
+      data: 'S3 event trigger received at {{ ts }}. Workflow s3_event_lambda_serverless started automatically via Lambda on file upload to serverless/incoming/. Run ID: {{ ts_nodash }}'
+      replace: true
+      dependencies: []
+  catchup: false

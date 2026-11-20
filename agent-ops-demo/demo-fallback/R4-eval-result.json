@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-09-28T22:11:50.616Z",
+  "agent": "agentops",
+  "evaluators": [
+    "ToolAndPolicyCheck",
+    "HelpfulnessJudge"
+  ],
+  "lookbackDays": 7,
+  "sessionCount": 1,
+  "results": [
+    {
+      "evaluator": "ToolAndPolicyCheck",
+      "aggregateScore": 1,
+      "sessionScores": [
+        {
+          "sessionId": "33b05303-6021-4772-8eb5-b6d85bc36a21",
+          "value": 1,
+          "label": "Pass",
+          "explanation": "Expected tool 'weather' was called. Tools observed: ['weather']."
+        }
+      ],
+      "tokenUsage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "totalTokens": 0
+      }
+    },
+    {
+      "evaluator": "HelpfulnessJudge",
+      "aggregateScore": 5,
+      "sessionScores": [
+        {
+          "sessionId": "33b05303-6021-4772-8eb5-b6d85bc36a21",
+          "value": 5,
+          "label": "Excellent",
+          "explanation": "The assistant's response directly answers the user's question about the weather in Athens. It correctly used the weather tool with the appropriate parameter (city: 'Athens'), received the tool result ('very sunny'), and accurately conveyed this information to the user. The response is clear, well-formatted with bold text for emphasis, and includes a relevant emoji that enhances readability and user experience. The assistant did not add any incorrect information or make assumptions beyond what the tool provided. The response is concise, friendly, and fully addresses the user's query without any errors or omissions."
+        }
+      ],
+      "tokenUsage": {
+        "inputTokens": 644,
+        "outputTokens": 144,
+        "totalTokens": 788
+      }
+    }
+  ]
+}

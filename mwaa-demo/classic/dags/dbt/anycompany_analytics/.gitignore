@@ -1,0 +1,5 @@
+# Local dbt artifacts. target/manifest.json is kept: Cosmos renders the DAG from it.
+logs/
+dbt_packages/
+target/*
+!target/manifest.json

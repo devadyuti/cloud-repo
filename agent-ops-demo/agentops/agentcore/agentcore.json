@@ -1,0 +1,123 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "agentops",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "agentcore:created-by": "agentcore-cli",
+    "agentcore:project-name": "agentops"
+  },
+  "runtimes": [
+    {
+      "name": "agentops",
+      "build": "Container",
+      "entrypoint": "main.py",
+      "codeLocation": "app/agentops/",
+      "runtimeVersion": "PYTHON_3_14",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP"
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [
+    {
+      "name": "ToolAndPolicyCheck",
+      "level": "SESSION",
+      "config": {
+        "codeBased": {
+          "managed": {
+            "codeLocation": "app/ToolAndPolicyCheck/",
+            "entrypoint": "lambda_function.handler",
+            "timeoutSeconds": 60,
+            "additionalPolicies": [
+              "execution-role-policy.json"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "HelpfulnessJudge",
+      "level": "SESSION",
+      "config": {
+        "llmAsAJudge": {
+          "model": "eu.anthropic.claude-sonnet-4-5-20250929-v1:0",
+          "instructions": "You are grading an AI assistant that answers weather and simple-math questions. Given the conversation in {context}, rate how HELPFUL and correct the assistant's final response is: did it directly answer the user's question, use the right tool, and give an accurate, clearly-worded result? Provide a score on the 1-5 quality scale and a one-sentence explanation justifying the score.",
+          "ratingScale": {
+            "numerical": [
+              {
+                "value": 1,
+                "label": "Poor",
+                "definition": "Fails to meet expectations"
+              },
+              {
+                "value": 2,
+                "label": "Fair",
+                "definition": "Partially meets expectations"
+              },
+              {
+                "value": 3,
+                "label": "Good",
+                "definition": "Meets expectations"
+              },
+              {
+                "value": 4,
+                "label": "Very Good",
+                "definition": "Exceeds expectations"
+              },
+              {
+                "value": 5,
+                "label": "Excellent",
+                "definition": "Far exceeds expectations"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [
+    {
+      "name": "PolicyGateway",
+      "protocolType": "MCP",
+      "description": "Gateway for PolicyGateway",
+      "targets": [
+        {
+          "name": "RefundTarget",
+          "targetType": "lambdaFunctionArn",
+          "lambdaFunctionArn": {
+            "lambdaArn": "arn:aws:lambda:eu-west-1:123456789012:function:agentops-process-refund",
+            "toolSchemaFile": "../policy/refund_tools.json"
+          }
+        }
+      ],
+      "authorizerType": "NONE",
+      "enableSemanticSearch": true,
+      "exceptionLevel": "NONE",
+      "policyEngineConfiguration": {
+        "policyEngineName": "RefundPolicyEngine",
+        "mode": "ENFORCE"
+      }
+    }
+  ],
+  "policyEngines": [
+    {
+      "name": "RefundPolicyEngine",
+      "policies": [
+        {
+          "name": "RefundLimit",
+          "statement": "permit (principal, action == AgentCore::Action::\"RefundTarget___process_refund\", resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:eu-west-1:123456789012:gateway/agentops-policygateway-sf1co0tlqb\")\nwhen { context.input.amount < 1000 };",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        }
+      ]
+    }
+  ],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": []
+}
